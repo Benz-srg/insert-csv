@@ -1,0 +1,12 @@
+.text-center {
+    text-align: center;
+  }
+  .style-1 {
+    .otp-input-8-field {
+      border-radius: 4px;
+      border: 1px solid #f5cd79;
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+    }
+  }

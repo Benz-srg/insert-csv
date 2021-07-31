@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>User</title>
+    <%- include('../head') %>
+    <!-- datatable -->
+    <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+
+    <!-- Your custom styles (optional) -->
+    <style>
+        .scroll {
+            overflow: scroll;
+            height: 400px;
+        }
+
+        .double-nav .breadcrumb-dn {
+            color: #fff;
+        }
+
+        .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+    <%- include('navigation') %>
+
+    <!--Main Layout-->
+    <main>
+        <div id="app">
+            <div class="container-fluid mt-5">
+                <h2>แก้ไขข้อมูลผู้ใช้งาน</h2>
+                <div class="d-flex">
+                  <div>
+                    <a href="/user" style="border-radius: 8px;" class="btn btn-danger">
+                      <i class="fas fa-chevron-circle-left"></i> ย้อนกลับ
+                    </a>
+                  </div>
+                  
+                </div>
+                <div class="card card-cascade narrower mt-5">
+                    <section>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card-body">
+                                    <form action="/user/edit" method="POST">
+                                        <input type="hidden" name="id" class="form-control"
+                                                    value="<%= data._id %>" required />
+                                                <input type="hidden" name="userid" class="form-control"
+                                                    value="<%= data.name %>" required />
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputName" style="position: initial; justify-content: end;">ชื่อ-นามสกุล</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                              <input type="text" name="name" class="form-control"
+                                              value="<%= data.name %>"
+                                                placeholder="ชื่อ-นามสกุล" required>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputEmail" style="position: initial; justify-content: end;">อีเมล</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                              <input type="email" name="email" class="form-control"
+                                              value="<%= data.email %>" id="inputEmail"
+                                                placeholder="อีเมล" required>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputTelno" style="position: initial; justify-content: end;">เบอร์โทร</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                              <input type="text" name="telno" class="form-control"
+                                              value="<%= data.telno %>"
+                                                @keypress="isNumber($event)" placeholder="เบอร์โทร" maxlength="10" required>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputTelno" style="position: initial; justify-content: end;">บทบาท</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                                <select name="role" class="form-control" id="sel1">
+
+                                                    <option value="<%= data.role %>" style="font-family:Kanit;" value="" disabled selected> <%= data.role %>
+                                                    </option>
+                                                <!-- <option >เลือกบทบาท</option> -->
+                                                <option value="Owner">Owner</option>
+                                                <option value="Data Analyst">Data Analyst</option>
+                                                <option value="Admin">Admin</option>
+                                                <option value="HR">HR</option>
+                                                <option value="Packing">Packing</option>
+                                                <option value="Sale Admin">Sale Admin</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                      
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group row">
+                                              <div class="col-md-4 text-right my-auto">
+                                                <label for="inputTelno" style="position: initial; justify-content: end;">รหัสผ่านเดิม</label>
+                                              </div>
+                                              <div class="col-md-8 mt-1">
+                                                <input type="password" name="oldpassword" v-model="oldpassword"
+                                                @keyup="checkpassword" class="form-control"
+                                                  >
+                                              </div>
+                                            </div>
+                        
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group row">
+                                              <div class="col-md-4 text-right my-auto">
+                                                <label for="inputUsername" style="position: initial; justify-content: end;">ชื่อผู้ใช้</label>
+                                              </div>
+                                              <div class="col-md-8 mt-1">
+                                                <input type="tel" name="username" class="form-control"
+                                                value="<%= data.username %>" id="inputUsername"
+                                                  placeholder="ชื่อผู้ใช้" required>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputPassword" style="position: initial; justify-content: end;">รหัส</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                              <input type="password" class="form-control" name="password" v-model="password"
+                                                id="inputPassword" placeholder="รหัส" required>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-12 text-center">
+                                          <div class="form-group row">
+                                            <div class="col-md-4 text-right my-auto">
+                                              <label for="inputConfirmPassword"
+                                                style="position: initial; justify-content: end;">ยืนยันรหัสผ่าน</label>
+                                            </div>
+                                            <div class="col-md-8 mt-1">
+                                              <input type="password" name="confirmpassword" class="form-control"
+                                              v-model="confirmpassword"
+                                                >
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="mt-3 text-center">
+                                            <button type="submit" v-if="check==true && confirmpassword == password && password != confirmoldpassword"
+                                                class="btn btn-primary">แก้ไขข้อมูล</button>
+                                            <button type="button" v-else="check==false" v-on:click="error()"
+                                                class="btn btn-primary">แก้ไขข้อมูล</button>
+                                        </div>
+                      
+                                      </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div style="height: 300px"></div>
+            </div>
+
+            <!-- Modal: insert -->
+            <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+
+            </div>
+        </div>
+        <!-- Modal: insert -->
+    </main>
+    <!--Main Layout-->
+    <%- include('footer') %>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        $(document).ready(function () {
+            // SideNav Initialization
+            $(".button-collapse").sideNav();
+            //data table
+            $("#dtBasicExample").DataTable();
+            $(".dataTables_length").addClass("bs-select");
+
+            $(".mdb-select").materialSelect();
+        });
+        // MDB Lightbox Init
+        $(function () {
+            $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+        });
+
+        switch (window.location.search) {
+            case "?alert=update-success":
+                toastr.success("เพิ่มแต้มเรียบร้อยแล้วค่ะ");
+                break;
+            case "?alert=delete-success":
+                toastr.warning("ลบรายการจองสำเร็จ");
+                break;
+        }
+
+        function _edit(id) {
+            window.location.href = "/admin/profile/" + id;
+        }
+
+        function _delete(id, userid) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger",
+                },
+                buttonsStyling: false,
+            });
+
+            swalWithBootstrapButtons
+                .fire({
+                    title: "คุณต้องการลบ?",
+                    //text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "ลบข้อมูล",
+                    cancelButtonText: "ยกเลิก",
+                    reverseButtons: true,
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/admin/delete/" + id + "/" + userid;
+                    }
+                });
+        }
+        new Vue({
+            el: "#app",
+            data() {
+                return {
+                    displayName: 'fff',
+                    email:'',
+                    userId: '',
+                    password:'',
+                    oldpassword: '',
+                    check: false,
+                    confirmoldpassword: '<%= data.password %>',
+                    pictureUrl: '',
+                    temail: '',
+                    confirmpassword:'',
+                    qrcode: '',
+                    id: 0,
+                    all_order: [{
+                        order_id: 0
+                    }],
+                    row: ''
+                }
+
+            },
+            created() {
+                // this.loadUsers();
+            },
+            methods: {
+                async loadUsers() {
+                    $('#example').DataTable({
+                        "paging": false,
+                        "autoWidth": true,
+                        "footerCallback": function (row, data, start, end, display) {
+                            var api = this.api();
+                            nb_cols = api.columns().nodes().length;
+                            var j = 6;
+                            while (j < nb_cols) {
+                                var pageTotal = api
+                                    .column(j, {
+                                        page: 'current'
+                                    })
+                                    .data()
+                                    .reduce(function (a, b) {
+                                        return Number(a) + Number(b);
+                                    }, 0);
+                                // Update footer
+                                $(api.column(j).footer()).html(pageTotal);
+                                document.getElementById("total").innerHTML = pageTotal;
+                                j++;
+                            }
+                        }
+                    });
+                },
+                error: function error() {
+                  console.log(this.confirmpassword +" "+this.password)
+                  console.log(this.confirmoldpassword +" "+this.password)
+                    if (this.confirmpassword != this.password) {
+                        Swal.fire(
+                        'รหัสผ่านไม่ตรงกัน',
+                        'โปรดตรวจสอบรหัสผ่าน',
+                        'error'
+                        )
+                    } else if(this.password == this.confirmoldpassword){
+                        Swal.fire(
+                        'รหัสผ่านผิดพลาด',
+                        'รหัสผ่านซ้ำกับรหัสเดิม',
+                        'error'
+                        )
+                    }else{
+                        Swal.fire(
+                        'รหัสผ่านเดิมไม่ถูกต้อง',
+                        'โปรดตรวจสอบรหัสผ่านเดิม',
+                        'error'
+                        )
+                    }
+                    this.oldpassword = ''
+                },
+                checkpassword: function checkpassword() {
+                    if (this.confirmoldpassword == this.oldpassword) {
+
+                        this.check = true
+                    } else {
+                        this.check = false
+                    }
+                },
+                isNumber: function (evt) {
+                              evt = (evt) ? evt : window.event;
+                              var charCode = (evt.which) ? evt.which : evt.keyCode;
+                              if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                                evt.preventDefault();;
+                              } else {
+                                return true;
+                              }
+                            },
+                async _upload() {
+                    var od_id = 0;
+                    Papa.parse(document.getElementById('upload-csv').files[0], {
+                        download: true,
+                        header: false,
+                        complete: function (results) {
+                            axios.post('/insertorder', {
+                                    data: results
+                                })
+                                .then((response) => {
+                                    console.log(response);
+                                    if (response.status == 200) {
+                                        window.location.href = "/app";
+                                    }
+                                }, (error) => {
+                                    console.log(error);
+                                });
+                            console.log(results.data[0])
+                        }
+                    });
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

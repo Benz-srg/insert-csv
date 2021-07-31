@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Trakanta</title>
+  <%- include('../head') %>
+  <!-- datatable -->
+  <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"
+    integrity="sha512-rKFvwjvE4liWPlFnvH4ZhRDfNZ9FOpdkD/BU5gAIA3VS3vOQrQ5BjKgbO3kxebKhHdHcNUHLqxQYSoxee9UwgA=="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.js"
+    integrity="sha512-/McISOEKVzVvgu12/1Hk8dSrbKBShnKn79/R50ysl5qWR1zgj347kOT8LJJvInxHDSPmiBG9vg5AhMx6rcELJg=="
+    crossorigin="anonymous"></script>
+
+  <!-- Your custom styles (optional) -->
+  <style>
+    th {
+      white-space: nowrap;
+    }
+
+    .scroll {
+      overflow: scroll;
+      height: 400px;
+    }
+
+    div.dataTables_wrapper div.dataTables_info,
+    div.dataTables_wrapper div.dataTables_paginate {
+      padding-top: 2rem;
+      /* text-align: right; */
+      padding-bottom: 1rem;
+      font-weight: 400;
+    }
+
+    .form-check-input-head[type="checkbox"]:checked+label:before,
+    label.btn input[type="checkbox"]:checked+label:before {
+      top: 15px;
+      left: 25px;
+      width: 12px;
+      height: 1.375rem;
+      border-top: 2px solid transparent;
+      border-right: 2px solid #4285f4;
+      border-bottom: 2px solid #4285f4;
+      border-left: 2px solid transparent;
+      -webkit-transform: rotate(40deg);
+      transform: rotate(40deg);
+      -webkit-transform-origin: 100% 100%;
+      transform-origin: 100% 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    .form-check-input-head[type="checkbox"]+label:before,
+    label.btn input[type="checkbox"]+label:before,
+    label.btn input[type="checkbox"]:not(.filled-in)+label:after {
+      position: absolute;
+      top: 15px;
+      left: 25px;
+      z-index: 0;
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      content: "";
+      border: 2px solid #fff;
+      border-radius: 1px;
+      -webkit-transition: .2s;
+      transition: .2s;
+    }
+
+    .double-nav .breadcrumb-dn {
+      color: #fff;
+    }
+
+    .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+      display: none;
+    }
+
+    .popup {
+      width: 900px;
+      margin: auto;
+      text-align: center
+    }
+
+    .popup img {
+      width: 200px;
+      height: 200px;
+      cursor: pointer
+    }
+
+    .show {
+      z-index: 999;
+      display: none;
+    }
+
+    .show .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .66);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .show .img-show {
+      width: 600px;
+      height: 400px;
+      background: #FFF;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      overflow: hidden
+    }
+
+    .img-show span {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      cursor: pointer;
+    }
+
+    table th:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+
+    table th:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+
+    .img-show img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .mdb-skin .side-nav .collapsible li .collapsible-header:hover {
+      border-radius: 0px 9px 9px 0px;
+      color: #ddba0b;
+      margin-top: 5px;
+      margin-right: 40px;
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .total-price {
+      width: 143px;
+      height: 47px;
+      margin: 35px 13.5px 15px 11.5px;
+      padding: 8px 46.5px 8px 41.5px;
+      border-radius: 10px;
+      background-color: #b5b5b5;
+    }
+  </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+  <%- include('navigation') %>
+
+  <!--Main Layout-->
+  <main>
+    <div class="container-fluid " id="app">
+      <h2>สรุปรายงาน</h2>
+
+      <!-- Create User Modal -->
+      <div class="modal fade mt-5" id="insertOrder" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">สร้างออเดอร์/แก้ไข</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="/createorder" method="POST">
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputName" style="position: initial; justify-content: end;">ชื่อ-นามสกุล</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="text" class="form-control" name="membername" v-model="membername" id="inputName"
+                        placeholder="ชื่อ-นามสกุล" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputEmail" style="position: initial; justify-content: end;">ไซส์</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="text" class="form-control" name="productsize" v-model="productsize" id="inputEmail"
+                        placeholder="ไซส์" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputTelno" style="position: initial; justify-content: end;">ชื่อสินค้า</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="text" class="form-control" id="inputTelno" name="productname" v-model="productname"
+                        placeholder="ชื่อสินค้า" required>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputTelno" style="position: initial; justify-content: end;">รายละเอียด</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="text" class="form-control" id="inputTelno" name="productdetail"
+                        v-model="productdetail" placeholder="รหัสสินค้า" required>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputTelno" style="position: initial; justify-content: end;">รหัสสินค้า</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="text" class="form-control" id="inputTelno" name="productcode" v-model="productcode"
+                        placeholder="รหัสสินค้า" required>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputTelno" style="position: initial; justify-content: end;">หมวดหมู่สินค้า</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <select name="category" v-model="category" class="form-control" required>
+                        <option style="font-family:Kanit;" value="" disabled selected>หมวดหมู่สินค้า</option>
+                        <option value="ผ้าไหม">ผ้าไหม</option>
+                        <option value="เสื้อไหม">เสื้อไหม</option>
+                        <option value="เสื้อฝ้าย">เสื้อฝ้าย</option>
+                        <option value="เครื่องเงิน">เครื่องเงิน</option>
+                        <option value="กางเกงผ้าฝ้าย">กางเกงผ้าฝ้าย</option>
+                        <option value="กางเกงผ้าไหม">กางเกงผ้าไหม</option>
+                        <option value="ผ้าฝ้าย">ผ้าฝ้าย</option>
+                        <option value="ผ้าคลุมไหล่">ผ้าคลุมไหล่</option>
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputUsername" style="position: initial; justify-content: end;">ราคา</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="number" class="form-control" name="productprice" v-model="productprice"
+                        id="inputUsername" placeholder="ราคา" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputPassword" style="position: initial; justify-content: end;">ยอดชำระ</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <input type="number" class="form-control" name="totalprice" v-model="totalprice"
+                        id="inputPassword" placeholder="ยอดชำระ" required>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12 text-center">
+                  <div class="form-group row">
+                    <div class="col-md-4 text-right my-auto">
+                      <label for="inputTelno" style="position: initial; justify-content: end;">สถานะ</label>
+                    </div>
+                    <div class="col-md-8 mt-1">
+                      <select name="status" v-model="status" class="form-control" required>
+                        <option style="font-family:Kanit;" value="" disabled selected>สถานะ</option>
+                        <option value="0">รอชำระเงิน</option>
+                        <option value="1">โอนแล้ว</option>
+                        <option value="2">ยกเลิกสินค้า</option>
+                        <option value="3">รอสรุปยอด</option>
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="text-center">
+                  <button
+                    v-if="membername!=''&&productname!=''&&productsize!=''&&productdetail!=''&&productcode!=''&&category!=''&&productprice!=''&&totalprice!=''&&status!=''"
+                    style="background-color: black; color: #fff; border-radius: 0px;" type="submit"
+                    class="btn">บันทึก</button>
+                  <button v-else="check==false" style="background-color: black; color: #fff; border-radius: 0px;"
+                    type="submit" class="btn" disabled>บันทึก</button>
+                </div>
+
+              </form>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+      <!-- End Create User -->
+
+      <!-- Modal -->
+      <div class="modal fade mt-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">UPLOAD</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <h3 class='col-12 modal-title text-center'>
+                <form class="form-inline md-form">
+                  <div class="file-field">
+                    <div class="btn btn-primary btn-sm">
+                      <span>Choose file</span>
+                      <input id="upload-csv" type="file" accept=".csv">
+                    </div>
+                  </div>
+                  <div class="form-group mt-5">
+                    <button type="button" v-on:click="_upload()" id="btn-upload-csv" class="btn btn-primary">Upload
+                      File
+                    </button>
+                  </div>
+                </form>
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Button trigger modal -->
+      <!-- Button trigger modal -->
+
+    <div class="card card-cascade narrower mt-5">
+      <section>
+        <form action="/app/list" method="GET">
+          <div class="row mt-3 mx-2">
+            <div class="col-md-2 mt-1">
+              <input id="nameFilter" name="member_name" value="<%= payload.facebook_name %>" type="text" class="form-control"
+                placeholder="ค้นหาชื่อ-นามสกุล">
+            </div>
+            <div class="col-md-2 mt-1">
+              <input id="codeFilter" type="text" value="<%= payload.product_name %>" name="product_name" class="form-control"
+                placeholder="ชื่อสินค้า/รหัสสินค้า">
+            </div> 
+            
+            <div class="col-md-2 mt-1">
+              <select id="statusFilter" name="status" class="form-control">
+                <% if(payload.status){
+                  switch (payload.status) {
+                    case '0':
+                    %>
+                    <option value="0">รอชำระเงิน</option>
+                    <%
+                      break;
+                      case '1':
+                      %>
+                      <option value="1">โอนแล้ว</option>
+                      <%
+                      break;
+                      case '2':
+                      %>
+                      <option value="2">ยกเลิกสินค้า</option>
+                      <%
+                      break;
+                      case '3':
+                        %>
+                      <option value="3">รอสรุปยอด</option>
+                      <%
+                      break;
+                  
+                    default:
+                      break;
+                  }
+                }else{
+                  %>
+                  <option style="font-family:Kanit;" value="" selected>การชำระเงิน</option>
+                  <%
+                }
+                %>
+                
+                <option value="3">รอสรุปยอด</option>
+                <option value="0">รอชำระเงิน</option>
+                <option value="1">โอนแล้ว</option>
+                <option value="2">ยกเลิกสินค้า</option>
+              </select></div>
+            <div class="col-md-2 mt-1">
+              <select id="categoryFilter" name="category_name" class="form-control">
+                <%if(payload.category_name){%>
+
+                  <option value="<%= payload.category_name %>" style="font-family:Kanit;" selected><%= payload.category_name %></option>
+                <% } else {%>
+                <option value="" style="font-family:Kanit;" selected>หมวดหมู่</option>
+                <% }%>
+                <option value="ผ้าไหม" style="font-family:Kanit;">ผ้าไหม</option>
+                <option value="เสื้อไหม">เสื้อไหม</option>
+                <option value="เสื้อฝ้าย">เสื้อฝ้าย</option>
+                <option value="เครื่องเงิน">เครื่องเงิน</option>
+                <option value="กางเกงผ้าฝ้าย">กางเกงผ้าฝ้าย</option>
+                <option value="กางเกงผ้าไหม">กางเกงผ้าไหม</option>
+                <option value="ผ้าฝ้าย">ผ้าฝ้าย</option>
+                <option value="ผ้าคลุมไหล่">ผ้าคลุมไหล่</option>
+              </select>
+            </div>
+            <div class="col-md-2 mt-1">
+              <input type="date" class="form-control" name="date_start" value="<%=date_start%>" />
+            </div>
+            <div class="col-md-2 mt-1">
+              <input type="date" class="form-control" name="date_end" value="<%=date_end%>" />
+            </div>
+          </div>
+          <div class="mt-3">
+            <button type="submit" class="btn btn-success btn-block"> ค้นหา </button>
+          </div>
+        </form>
+        <!-- <button type="button" style="border-radius: 8px; background-color: #e7b000; color: #fff;" class="btn"
+            v-on:click="exportcsv"> -->
+
+        <!-- <button type="button" style="border-radius: 8px; background-color: #e7b000; color: #fff;" class="btn"
+            @click="checkall()"> -->
+        <form action="/export/csv" id="target" method="POST">
+          <button onclick="checkall()" style="border-radius: 8px; width: 150px; background-color: #e7b000; color: #fff;"
+            class="btn">ส่งออกไฟล์
+          </button>
+
+          <div class="row">
+            <div class="col-12">
+              <div class="card-body">
+                <div class="row">
+
+                  <div class="table-responsive text-nowrap">
+                    <span class="table-add float-right mb-3 mr-2" style="margin-top: 4px"><a href="#!"
+                        class="text-success" data-toggle="modal" data-target="#modalinsert"><i class="fas fa-plus fa-2x"
+                          aria-hidden="true"></i></a></span>
+                    <div class="mt-5 font-18 mb-3">
+                      ยอดรวม <span id="total" class="total-price"><%= totalprice %></span> บาท
+                    </div>
+                    <table id="example" class="table table-striped row-border" cellspacing="0" width="100%">
+                      <thead style="border-radius: 10px;">
+                        <tr class="text-center" style="color: #fff; border-radius: 10px; background-color: #9e7d35;">
+                          <th>
+                            <input class="form-check-input-head border-white check-id" style="border:2px solid #fff;"
+                              type="checkbox" id="selectAll" />
+                            <label class="form-check-label" for="selectAll">
+                            </label>
+                          </th>
+                          <th class="font-18">รหัสออเดอร์</th>
+                          <th class="font-18">ชื่อเฟสบุ๊ค</th>
+                          <th class="font-18">ชื่อสินค้า</th>
+                          <th class="font-18">รหัสสินค้า</th>
+                          <th class="font-18">สถานะ</th>
+                          <th class="font-18">หมวดหมู่สินค้า</th>
+                          <th class="font-18">การจัดการ</th>
+                          <th class="font-18">ยอดชำระทั้งหมด</th>
+                        </tr>
+                      </thead>
+                      <tfoot>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>ยอดรวม</td>
+                          <td></td>
+                        </tr>
+                      </tfoot>
+                      <tbody class="text-center">
+                        <% for(const [key, order] of Object.entries(data))  {%>
+                        <tr>
+                          <td class="font-18">
+                            <div class="form-check">
+                              <input class="form-check-input check-id " type="checkbox" v-model="checkorder"
+                                name="vechicle[]" value="<%= order._id %>" id="flexCheckDefault<%= order._id %>">
+                              <label class="form-check-label<%= order._id %>" for="flexCheckDefault<%= order._id %>">
+
+                              </label>
+                            </div>
+                          </td>
+                          <td class="font-18"><%
+                        let orderid = 'A'
+                        let numorder = order.orderid.toString();
+                      
+                        for(let i = parseInt(numorder.length);i<= 4;i++){
+                          orderid += '0'
+                        }
+                        orderid+=numorder;
+                          
+                          %>
+                            <%= orderid %>
+                          </td>
+                          <td class="font-18"><%= order.facebook_name %></td>
+                          <td class="font-18"><%= order.product_name %></td>
+                          <td class="font-18"><%= order.product_code %></td>
+                          <%if(order.status==0){%>
+                          <td class="text-primary font-18">รอชำระเงิน</td>
+                          <%}else if(order.status == 1){%>
+                          <td class="text-success font-18">โอนแล้ว</td>
+                          <%} else if(order.status == 2){%>
+                          <td class="text-danger font-18">ยกเลิกสินค้า</td>
+                          <%} else if(order.status == 3){%>
+                          <td class="text-warning font-18">รอสรุปยอด</td>
+                          <%}else{%>
+                          <td></td>
+                          <% } %>
+
+                          <td class="font-18"><%= order.product_category %></td>
+                          <td class="font-18"><a class="btn btn-primary btn-sm "
+                              v-on:click="editOrder('<%=order.member_name%>', '<%=order.product_name%>','<%=order.product_code%>','<%=order.facebook_name%>','<%=order.product_price%>','<%=order.status%>','<%=order.product_category%>','<%=order.product_size%>','<%=order.totalprice%>','<%=order._id%>')">รายละเอียด</a>
+                          </td>
+                          <td class="font-18" data-order="<%= parseInt(order.product_price); %>">
+                            <%= order.product_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); %>
+                          </td>
+                        </tr>
+                        <%}%>
+                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- <form action="/export/csv" method="POST" id="target">
+        <input type="hidden" name="id[]" v-model="checkorder"> -->
+        <!-- <button type="submit"></button> -->
+      <!-- </form> -->
+      <div style="height: 300px"></div>
+    
+    </form>
+
+    
+    <!-- Modal: insert -->
+    <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+    </div>
+    <!-- Modal -->
+    <div class="modal fade mt-5" id="editModal" style="z-index: 9999;" tabindex="-1" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-lg">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLabel">สร้างออเดอร์/แก้ไข</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form action="/app/editorder" method="POST">
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputName" style="position: initial; justify-content: end;">ชื่อ-นามสกุล</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="hidden" class="form-control" name="_id" v-model="edit_id" readonly>
+              <input type="hidden" class="form-control" name="old_price" v-model="old_price">
+              <input type="hidden" class="form-control" name="last_price" v-model="lasttotalprice">
+              <input type="text" class="form-control" name="edit_member_name" v-model="edit_member_name" id="inputName"
+                placeholder="ชื่อ-นามสกุล" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputName" style="position: initial; justify-content: end;">ชื่อเฟสบุ๊ค</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="text" class="form-control" name="edit_facebook_name" v-model="edit_facebook_name"
+                id="inputName" placeholder="ชื่อเฟสบุ๊ค" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputEmail" style="position: initial; justify-content: end;">ไซส์</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="text" class="form-control" name="edit_product_size" v-model="edit_product_size" id="inputEmail"
+                placeholder="ไซส์" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputTelno" style="position: initial; justify-content: end;">ชื่อสินค้า</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="text" class="form-control" id="inputTelno" name="edit_product_name" v-model="edit_product_name"
+                 placeholder="ชื่อสินค้า" required readonly>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputTelno" style="position: initial; justify-content: end;">รายละเอียด</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="text" class="form-control" id="inputTelno" name="edit_product_detail" v-model="edit_product_detail"
+               placeholder="รายละเอียด" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputTelno" style="position: initial; justify-content: end;">รหัสสินค้า</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="text" class="form-control" id="inputTelno" name="edit_product_code" v-model="edit_product_code"
+               placeholder="รหัสสินค้า" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputTelno" style="position: initial; justify-content: end;">หมวดหมู่สินค้า</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="hidden" name="edit_category" v-model="edit_product_category">
+              <select name="edit_product_category" v-model="edit_product_category" class="form-control" required readonly> 
+                <option v-if="edit_product_category=='ผ้าไหม'" style="font-family:Kanit;" value="ผ้าไหม" disabled selected>ผ้าไหม</option>
+                <option v-else-if="edit_product_category=='เสื้อไหม'" style="font-family:Kanit;" value="เสื้อไหม" disabled selected>เสื้อไหม</option>
+                <option v-else-if="edit_product_category=='เสื้อฝ้าย'" style="font-family:Kanit;" value="เสื้อฝ้าย" disabled selected>เสื้อฝ้าย</option>
+                <option v-else-if="edit_product_category=='เครื่องเงิน'" style="font-family:Kanit;" value="เครื่องเงิน" disabled selected>เครื่องเงิน</option>
+                <option v-else-if="edit_product_category=='กางเกงผ้าฝ้าย'" style="font-family:Kanit;" value="กางเกงผ้าฝ้าย" disabled selected>กางเกงผ้าฝ้าย</option>
+                <option v-else-if="edit_product_category=='กางเกงผ้าไหม'" style="font-family:Kanit;" value="กางเกงผ้าไหม" disabled selected>กางเกงผ้าไหม</option>
+                <option v-else-if="edit_product_category=='ผ้าฝ้าย'" style="font-family:Kanit;" value="ผ้าฝ้าย" disabled selected>ผ้าฝ้าย</option>
+                <option v-else="edit_product_category=='ผ้าคลุมไหล่'" style="font-family:Kanit;" value="ผ้าคลุมไหล่" disabled selected>ผ้าคลุมไหล่</option>
+                <option value="ผ้าไหม">ผ้าไหม</option>
+                <option value="เสื้อไหม">เสื้อไหม</option>
+                <option value="เสื้อฝ้าย">เสื้อฝ้าย</option>
+                <option value="เครื่องเงิน">เครื่องเงิน</option>
+                <option value="กางเกงผ้าฝ้าย">กางเกงผ้าฝ้าย</option>
+                <option value="กางเกงผ้าไหม">กางเกงผ้าไหม</option>
+                <option value="ผ้าฝ้าย">ผ้าฝ้าย</option>
+                <option value="ผ้าคลุมไหล่">ผ้าคลุมไหล่</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputUsername" style="position: initial; justify-content: end;">ราคา</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="number" class="form-control" name="edit_product_price" v-model="edit_product_price" id="inputUsername"
+                placeholder="ราคา" required readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputPassword" style="position: initial; justify-content: end;">ยอดชำระ</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <input type="number" class="form-control" name="edit_totalprice" v-model="edit_totalprice"
+                id="inputPassword" placeholder="ยอดชำระ" readonly>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 text-center">
+          <div class="form-group row">
+            <div class="col-md-4 text-right my-auto">
+              <label for="inputTelno" style="position: initial; justify-content: end;">สถานะ</label>
+            </div>
+            <div class="col-md-8 mt-1">
+              <span v-if="edit_status==0" class="text-primary">รอชำระเงิน</span>
+              <span  v-else-if="edit_status==1" class="text-success">โอนแล้ว</span>
+              <span v-else-if="edit_status==2" class="text-danger">ยกเลิกสินค้า</span>
+              <span  v-else-if="edit_status==3" class="text-warning">รอสรุปยอด</span>
+            </div>
+          </div>
+
+        </div>
+        <div class="text-center">
+          <button type="button" class="btn bg-dark text-white" data-dismiss="modal" aria-label="Close">
+           ปิด
+          </button>
+          <!-- <button v-if="edit_member_name !=''&& edit_product_name !=''&& edit_status != '' && edit_product_price != '' && edit_product_category != ''" style="background-color: black; color: #fff; border-radius: 0px;" type="submit" class="btn">บันทึก</button>
+          <button v-else="check==false" style="background-color: black; color: #fff; border-radius: 0px;" type="submit" class="btn" disabled>บันทึก</button> -->
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+
+  </div>
+  </main>
+  <!--Main Layout-->
+  <%- //include('footer') %>
+
+                        <script src="/js/jquery-3.4.1.min.js"></script>
+                        <!-- Bootstrap tooltips -->
+                        <script type="text/javascript" src="/js/bootstrap.js"></script>
+                        <!-- MDB core JavaScript -->
+                        <script type="text/javascript" src="/js/mdb.min.js"></script>
+                        <!-- Custom scripts -->
+                        <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+                        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+                        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+                        <!-- MDBootstrap Datatables  -->
+                        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                        <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+                        <!-- sweetalert2 -->
+                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                        <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script> -->
+                        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js">
+                        </script>
+                        <script type="text/javascript"
+                          src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+                        <script type="text/javascript">
+                          $(document).ready(function () {
+                            // SideNav Initialization
+                            $(".button-collapse").sideNav();
+                            //data table
+                            $('#myModal').on('shown.bs.modal', function () {
+                              $('#myInput').trigger('focus')
+                            })
+                            // DataTable initialisation
+
+                            var datatable = $('#example').DataTable({
+                              "paging": true,
+                              "autoWidth": true,
+                            });
+
+                            $(".dataTables_length").addClass("bs-select");
+
+                            $(".mdb-select").materialSelect();
+
+                            $("#selectAll").click(function () {
+                              // console.log('in')
+                              $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
+                            });
+                            // $('#export').click(function()
+                            // {
+                            //   var x = document.getElementsByName('vechicle').value
+                            //   console.log(x)
+                            // })
+                          });
+                          // $("#selectAll").click(function () {
+                          //   console.log('out')
+                          //     $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
+                          //   });
+                          // MDB Lightbox Init
+                          $(function () {
+                            $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+                          });
+
+                          switch (window.location.search) {
+
+                            case "?alert=warn-none-data":
+                              toastr.warning("ไม่มีข้อมูลที่เลือก");
+                              break;
+                            case "?alert=update-success":
+                              toastr.success("ยืนยันการจองเรียบร้อยแล้วค่ะ");
+                              break;
+                            case "?alert=export-success-data":
+                              toastr.success("ดาวน์โหลดไฟล์เสร็จสิ้น");
+                              break;
+
+                            case "?alert=edit-success":
+                              toastr.warning("แก้สถานะการจองเรียบร้อยค่ะ");
+                              break;
+                            case "?alert=delete-success":
+                              toastr.warning("ลบรายการจองสำเร็จ");
+                              break;
+                            case "?alert=confirm-success":
+                              toastr.success("ยืนยันโต๊ะเสร็จสิ้น");
+                              break;
+
+                          }
+
+                          function _edit(id, userid) {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                              customClass: {
+                                confirmButton: "btn btn-success",
+                                cancelButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+
+                            swalWithBootstrapButtons
+                              .fire({
+                                title: "คุณต้องเปลี่ยนสถานะจอง ?",
+                                //text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "ยืนยันการจอง",
+                                cancelButtonText: "ยกเลิก",
+                                reverseButtons: true,
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  window.location.href = "/admin/rev/edit/" + id + "/" + userid;
+                                }
+                              });
+                          }
+
+                          function _approve(id, userid) {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                              customClass: {
+                                confirmButton: "btn btn-success",
+                                cancelButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+
+                            swalWithBootstrapButtons
+                              .fire({
+                                title: "คุณต้องการยืนยันการจอง ?",
+                                //text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "ยืนยันการจอง",
+                                cancelButtonText: "ยกเลิก",
+                                reverseButtons: true,
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  window.location.href = "/admin/rev/" + id + "/" + userid;
+                                }
+                              });
+                          }
+
+                          function _approveCoupon(id, userid, coupon, amount) {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                              customClass: {
+                                confirmButton: "btn btn-success",
+                                cancelButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+
+                            swalWithBootstrapButtons
+                              .fire({
+                                title: "คุณต้องการยืนยันการจอง ?",
+                                //text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "ยืนยันการจอง",
+                                cancelButtonText: "ยกเลิก",
+                                reverseButtons: true,
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  window.location.href = "/admin/rev/used/" + id + "/" + userid + "/" + coupon + "/" +
+                                    amount;
+                                }
+                              });
+                          }
+
+                          function _approvetable(id, userid) {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                              customClass: {
+                                confirmButton: "btn btn-success",
+                                cancelButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+
+                            swalWithBootstrapButtons
+                              .fire({
+                                title: "คุณต้องการยืนยันการจอง ?",
+                                //text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "ยืนยันการจอง",
+                                cancelButtonText: "ยกเลิก",
+                                reverseButtons: true,
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  window.location.href = "/admin/rev/booked/" + id + "/" + userid;
+                                }
+                              });
+                          }
+
+                          function _delete(id, userid) {
+                            const swalWithBootstrapButtons = Swal.mixin({
+                              customClass: {
+                                confirmButton: "btn btn-success",
+                                cancelButton: "btn btn-danger",
+                              },
+                              buttonsStyling: false,
+                            });
+
+                            swalWithBootstrapButtons
+                              .fire({
+                                title: "คุณต้องการลบรายการนี้ ?",
+                                //text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "ยืนยัน",
+                                cancelButtonText: "ยกเลิก",
+                                reverseButtons: true,
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  window.location.href = "/admin/rev/delete/" + id + "/" + userid;
+                                }
+                              });
+                          }
+                          new Vue({
+                            el: "#app",
+                            data() {
+                              return {
+                                checkorder: [],
+                                check: false,
+                                membername: '',
+                                productsize: '',
+                                productname: '',
+                                productdetail: '',
+                                category: '',
+                                productcode: '',
+                                productprice: 0,
+                                totalprice: 0,
+                                status: '',
+                                displayName: 'fff',
+                                userId: '',
+                                pictureUrl: '',
+                                temail: '',
+                                edit_id: '',
+                                old_price: '',
+                                lasttotalprice: '',
+                                edit_member_name: '',
+                                edit_facebook_name: '',
+                                edit_product_size: '',
+                                edit_product_name: '',
+                                edit_product_detail: '',
+                                edit_product_code: '',
+                                edit_product_category: '',
+                                edit_product_price: '',
+                                edit_totalprice: '',
+                                edit_status: '',
+                                qrcode: '',
+                                id: 0,
+                                all_order: [{
+                                  order_id: 0
+                                }],
+                                row: ''
+                              }
+
+                            },
+                            created() {
+                              // this.loadUsers();
+                            },
+                            methods: {
+                              async editOrder(member_name, product_name, product_code, facebook_name, product_price,
+                                status, product_category, product_size, totalprice, id) {
+                                this.edit_id = id;
+                                this.edit_member_name = member_name;
+                                this.edit_product_name = product_name;
+                                this.edit_product_code = product_code;
+                                this.edit_facebook_name = facebook_name;
+                                this.edit_product_price = product_price;
+                                this.edit_product_size = product_size;
+                                this.edit_status = status;
+                                this.edit_product_category = product_category;
+                                this.edit_totalprice = totalprice
+                                this.old_price = product_price;
+                                $('#editModal').modal('show');
+                              },
+                              async checkall() {
+                                $("#target").submit();
+                                Swal.fire({
+                                  title: 'ระบบกำลังอัปโหลด',
+                                  html: 'กรุณารอสักครู่',
+                                  timer: 20000,
+                                  timerProgressBar: true,
+                                  didOpen: () => {
+                                    Swal.showLoading()
+                                    timerInterval = setInterval(() => {
+                                      const content = Swal.getContent()
+                                      if (content) {
+                                        const b = content.querySelector('b')
+                                        if (b) {
+                                          b.textContent = Swal.getTimerLeft()
+                                        }
+                                      }
+                                    }, 100)
+                                  },
+                                  willClose: () => {
+                                    clearInterval(timerInterval)
+                                  }
+                                }).then((result) => {
+
+                                })
+                              },
+
+                              async _upload() {
+                                var od_id = 0;
+                                Papa.parse(document.getElementById('upload-csv').files[0], {
+                                  download: true,
+                                  header: false,
+                                  complete: function (results) {
+                                    axios.post('/insertorder', {
+                                        data: results
+                                      })
+                                      .then((response) => {
+                                        // console.log(response);
+                                        if (response.status == 200) {
+                                          window.location.href = "/app";
+                                        }
+                                      }, (error) => {
+                                        // console.log(error);
+                                      });
+                                    // console.log(results.data[0])
+                                  }
+                                });
+                              }
+                            }
+                          })
+                        </script>
+</body>
+
+</html>

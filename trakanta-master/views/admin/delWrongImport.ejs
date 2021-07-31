@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>User</title>
+    <%- include('../head') %>
+    <!-- datatable -->
+    <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+
+    <!-- Your custom styles (optional) -->
+    <style>
+      .scroll {
+        overflow: scroll;
+        height: 400px;
+      }
+
+      .double-nav .breadcrumb-dn {
+        color: #fff;
+      }
+
+      .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body class="fixed-sn mdb-skin">
+    <%- include('navigation') %>
+
+    <!--Main Layout-->
+    <main>
+      <div id="app">
+        <div class="container-fluid mt-5">
+          <h2>ลบออเดอร์ที่ผิดพลาด</h2>
+          <div class="d-flex">
+            <div>
+              <a href="/user" style="border-radius: 8px" class="btn btn-danger">
+                <i class="fas fa-chevron-circle-left"></i> ย้อนกลับ
+              </a>
+            </div>
+          </div>
+          <div class="card card-cascade narrower mt-5">
+            <section>
+              <div class="row text-center">
+                <div class="col-12">
+                  <div class="card-body">
+                    <form>
+                      <input
+                        type="date"
+                        class="form-control"
+                        v-model="dateSelected"
+                      />
+                      <br />
+                      <button
+                        class="btn btn-primary"
+                        v-on:click="say"
+                        type="button"
+                      >
+                        ลบ
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div style="height: 300px"></div>
+        </div>
+      </div>
+      <!-- Modal: insert -->
+    </main>
+    <!--Main Layout-->
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+      $(document).ready(function () {
+        // SideNav Initialization
+        $(".button-collapse").sideNav();
+        //data table
+        // Data Picker Initializatio
+
+        $("#dtBasicExample").DataTable();
+        $(".dataTables_length").addClass("bs-select");
+
+        $(".mdb-select").materialSelect();
+      });
+      // MDB Lightbox Init
+      $(function () {
+        $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+      });
+
+      switch (window.location.search) {
+        case "?alert=update-success":
+          toastr.success("เพิ่มแต้มเรียบร้อยแล้วค่ะ");
+          break;
+        case "?alert=delete-success":
+          toastr.warning("ลบรายการจองสำเร็จ");
+          break;
+      }
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            dateSelected: dayjs().format("YYYY-MM-DD"),
+            dateSec: "test",
+          };
+        },
+        created() {
+          // this.loadUsers();
+        },
+        methods: {
+          say: async function () {
+            axios
+              .post("/app/dataData", {
+                date: this.dateSelected,
+              })
+              .then(
+                (res) => {
+                  console.log(res);
+                  if (res.status == 200) {
+                    toastr.success(res.data.message);
+                    // setTimeout(function () {
+                    //   window.location.reload();
+                    // }, 3000);
+                  } else {
+                    toastr.error(res.data.message);
+                  }
+                },
+                (error) => {
+                  console.log(error);
+                }
+              );
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

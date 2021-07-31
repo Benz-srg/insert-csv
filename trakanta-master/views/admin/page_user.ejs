@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>User</title>
+  <%- include('../head') %>
+  <!-- datatable -->
+  <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+
+  <!-- Your custom styles (optional) -->
+  <style>
+    .scroll {
+      overflow: scroll;
+      height: 400px;
+    }
+
+    .double-nav .breadcrumb-dn {
+      color: #fff;
+    }
+
+    .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+      display: none;
+    }
+    .popup{
+    width: 900px;
+    margin: auto;
+    text-align: center
+}
+.popup img{
+    width: 200px;
+    height: 200px;
+    cursor: pointer
+}
+.show{
+    z-index: 999;
+    display: none;
+}
+.show .overlay{
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.66);
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.show .img-show{
+    width: 600px;
+    height: 400px;
+    background: #FFF;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    overflow: hidden
+}
+.img-show span{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 99;
+    cursor: pointer;
+}
+.img-show img{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+  </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+  <%- include('navigation') %>
+
+  <!--Main Layout-->
+  <main>
+    <div class="container-fluid mt-5">
+      <div class="mt-5">
+        <a href="/home"><button class="btn btn-danger btn-rounded btn-sm my-0 passingID" >Back</button></a>
+      </div>
+      <div class="card card-cascade narrower mt-5">
+        <section>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="view view-cascade gradient-card-header light-blue lighten-1">
+                <h3 class="h4-responsive mb-0 font-weight-500">
+                  <i class="fas fa-user-friends"></i> รายการจอง
+                </h3>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="card-body">
+                <div class="table-responsive text-nowrap">
+                  <span class="table-add float-right mb-3 mr-2" style="margin-top: 4px"><a href="#!"
+                      class="text-success" data-toggle="modal" data-target="#modalinsert"><i class="fas fa-plus fa-2x"
+                        aria-hidden="true"></i></a></span>
+                        
+                  <table id="dtBasicExample" class="table table-striped table-bordered table-sm dataTables_length" cellspacing="0"
+                    width="100%">
+                    <thead class="text-center">
+                      <tr>
+                        <th class="th-sm">โปรไฟล์</th>
+                        <th class="th-sm">ชื่อ</th>
+                        <th class="th-sm">เบอร์ติดต่อ</th>
+                        <th class="th-sm">วันที่สร้าง</th>
+                        <th class="th-sm">วันที่จองโต๊ะ</th>
+                        <th class="th-sm">เวลาจอง</th>
+                        <th class="th-sm">จำนวน(คน)</th>
+                        <th class="th-sm">รายละเอียด</th>
+                        <th class="th-sm">สถานะ</th>
+                        <th class="th-sm">หลักฐาน</th>
+                        <th class="th-sm">ยืนยัน</th>
+                        <th class="th-sm">แก้ไข</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-center">
+                      <% for(const [key, user] of Object.entries(data))  {%>
+                      <tr class="text-center">
+                        <td> <img src="<%= pic[key] %>" width="50px" height="50px"> </td>
+                        <td> <%= user.name %> </td>
+                        <td> <%= user.phone %> </td>
+                        <td> <%= user.create %> </td>
+                        <td> <%= user.date %> </td>
+                        <td> <%= user.time %> </td>
+                        <td> <%= user.amount %> </td>
+                        <td> <%= user.type %> </td>
+                        <td class="text-center">
+                          <span class="table-remove">
+                            <h6>
+                              <% if(user.status == 0) {%>
+                              <span class="badge bg-warning text-dark">รอการยืนยัน</span>
+                              <% } else if(user.status == 1) {%>
+                              <span class="badge bg-success text-dark">ยืนยันการจอง</span>
+                              <% } else if(user.status == 3) {%>
+                              <span class="badge badge-secondary text-dark">ลบรายการจอง</span>
+                              <% } else if(user.status == 6) {%>
+                                <span class="badge badge-info text-dark">ลูกค้ามาใช้บริการแล้ว</span>
+                                <% } %>
+                            </h6>
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <a href="/showpic/<%= user.pic %>"><img src="/uploads/<%= user.pic %>" width="50px" height="50px"></a>
+                        </td>
+                        <td class="text-center">
+                          <span class="table-remove">
+                            <% if(user.status == 3) {%>
+                            <button type="button" class="btn btn-warning btn-rounded btn-sm my-0"
+                              onclick="_edit('<%=user._id%>','<%=user.userID%>')">
+                               คืนค่า
+                            </button>
+                            <% }else if(user.status == 1) {%>
+                              <button type="button" class="btn btn-info btn-rounded btn-sm my-0"
+                              onclick="_approvetable('<%=user._id%>','<%=user.userID%>')">
+                               ยืนยันโต๊ะ
+                            </button>
+                            <% } else if(user.status == 0 && user.coupon !== '') {%>
+                              
+                              <button type="button" class="btn btn-success btn-rounded btn-sm my-0"
+                                onclick="_approveCoupon('<%=user._id%>','<%=user.userID%>','<%=user.coupon%>','<%=user.amount%>')">
+                                 ยืนยัน + หักคูปอง
+                              </button>
+
+                            <% } else if(user.status == 0) {%>
+                            <button type="button" class="btn btn-success btn-rounded btn-sm my-0"
+                              onclick="_approve('<%=user._id%>','<%=user.userID%>')">
+                              ยืนยัน
+                            </button>
+                            <% } else if(user.status == 6) {%>
+                              <button type="button" class="btn btn-warning btn-rounded btn-sm my-0"
+                              onclick="_edit('<%=user._id%>','<%=user.userID%>')">
+                               คืนค่า
+                            </button>
+                              <% } %>
+
+                          </span>
+                        </td>
+                        <td class="text-center">
+                          <span class="table-remove">
+                            <% if(user.status == 3) {%>
+                            <button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
+                              onclick="_delete('<%=user._id%>','<%=user.userID%>')" disabled>
+                              <i class="far fa-trash-alt"></i> ลบ
+                            </button>
+                            <% }else if(user.status == 1) {%>
+                              <button type="button" class="btn btn-warning btn-rounded btn-sm my-0"
+                              onclick="_edit('<%=user._id%>','<%=user.userID%>')">
+                               คืนค่า
+                            </button>
+                              
+                            <% } else if(user.status == 0) {%>
+                            <button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
+                              onclick="_delete('<%=user._id%>','<%=user.userID%>')">
+                              <i class="far fa-trash-alt"></i> ลบ
+                            </button>
+                            <% } else if(user.status == 6) {%>
+                              <button type="button" class="btn btn-danger btn-rounded btn-sm my-0"
+                              onclick="_delete('<%=user._id%>','<%=user.userID%>')" disabled>
+                              <i class="far fa-trash-alt"></i> ลบ
+                            </button>
+                            <% } %>
+
+                          </span>
+                        </td>
+                      </tr>
+                      <% }; %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div style="height: 300px"></div>
+    </div>
+
+    <!-- Modal: insert -->
+    <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+
+    </div>
+    <!-- Modal: insert -->
+  </main>
+  <!--Main Layout-->
+  <%- //include('footer') %>
+  <!-- SCRIPTS -->
+  <!-- JQuery -->
+  <script src="/js/jquery-3.4.1.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="/js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="/js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+
+  <!-- MDBootstrap Datatables  -->
+  <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+  <!-- sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <script>
+    $(document).ready(function () {
+      // SideNav Initialization
+      $(".button-collapse").sideNav();
+      //data table
+      $("#dtBasicExample").DataTable(
+      {
+        "order": [[ 3, "desc" ]]
+      }
+      );
+      $(".dataTables_length").addClass("bs-select");
+
+      $(".mdb-select").materialSelect();
+    });
+    // MDB Lightbox Init
+    $(function () {
+      $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+    });
+
+    switch (window.location.search) {
+
+      case "?alert=update-success":
+        toastr.success("ยืนยันการจองเรียบร้อยแล้วค่ะ");
+        break;
+      case "?alert=edit-success":
+        toastr.warning("แก้สถานะการจองเรียบร้อยค่ะ");
+        break;
+      case "?alert=delete-success":
+        toastr.warning("ลบรายการจองสำเร็จ");
+        break;
+      case "?alert=confirm-success":
+        toastr.success("ยืนยันโต๊ะเสร็จสิ้น");
+        break;
+        
+    }
+
+    function _edit(id, userid) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องเปลี่ยนสถานะจอง ?",
+          //text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยันการจอง",
+          cancelButtonText: "ยกเลิก",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/rev/edit/" + id + "/" + userid;
+          }
+        });
+    }
+
+    function _approve(id, userid) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการยืนยันการจอง ?",
+          //text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยันการจอง",
+          cancelButtonText: "ยกเลิก",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/rev/" + id + "/" + userid;
+          }
+        });
+    }
+    function _approveCoupon(id, userid,coupon,amount) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการยืนยันการจอง ?",
+          //text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยันการจอง",
+          cancelButtonText: "ยกเลิก",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/rev/used/" + id + "/" + userid+"/"+coupon+"/"+amount;
+          }
+        });
+    }
+    
+    function _approvetable(id, userid) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการยืนยันการจอง ?",
+          //text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยันการจอง",
+          cancelButtonText: "ยกเลิก",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/rev/booked/" + id + "/" + userid;
+          }
+        });
+    }
+
+    function _delete(id, userid) {
+      const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: "btn btn-success",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+
+      swalWithBootstrapButtons
+        .fire({
+          title: "คุณต้องการลบรายการนี้ ?",
+          //text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "ยืนยัน",
+          cancelButtonText: "ยกเลิก",
+          reverseButtons: true,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/admin/rev/delete/" + id + "/" + userid;
+          }
+        });
+    }
+  </script>
+</body>
+
+</html>

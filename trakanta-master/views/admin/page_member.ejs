@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>User</title>
+    <%- include('../head') %>
+    <!-- datatable -->
+    <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+
+    <!-- Your custom styles (optional) -->
+    <style>
+      .scroll {
+        overflow: scroll;
+        height: 400px;
+      }
+
+      .double-nav .breadcrumb-dn {
+        color: #fff;
+      }
+
+      .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body class="fixed-sn mdb-skin">
+    <%- include('navigation') %>
+
+    <!--Main Layout-->
+    <main>
+      <div class="container-fluid mt-5">
+        <div class="mt-5">
+          <a href="/home"><button class="btn btn-danger btn-rounded btn-sm my-0 passingID" >Back</button></a>
+        </div>
+        <div class="card card-cascade narrower mt-5">
+          <section>
+            <div class="row">
+              <div class="col-md-4">
+                <div
+                  class="view view-cascade gradient-card-header light-blue lighten-1"
+                >
+                  <h3 class="h4-responsive mb-0 font-weight-500">
+                    <i class="fas fa-user-friends"></i> ข้อมูลผู้ใช้
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <div class="card-body">
+                  <div class="table-responsive text-nowrap">
+                    <span
+                      class="table-add float-right mb-3 mr-2"
+                      style="margin-top: 4px"
+                      ><a
+                        href="#!"
+                        class="text-success"
+                        data-toggle="modal"
+                        data-target="#modalinsert"
+                        ><i class="fas fa-plus fa-2x" aria-hidden="true"></i></a
+                    ></span>
+                    <table
+                      id="dtBasicExample"
+                      class="table table-striped table-bordered table-sm"
+                      cellspacing="0"
+                      width="100%"
+                    >
+                      <thead class="text-center">
+                        <tr>
+                          <th class="th-sm">ชื่อ</th>
+                          <!-- <th class="th-sm">รูปประจำตัว</th> -->
+                          <th class="th-sm">รูป</th>
+                          <th class="th-sm">อีเมล</th>
+                          <th class="th-sm">เบอร์มือถือ</th>
+                          <th class="th-sm">ยอดสั่งซื้อ</th>
+                          <th class="th-sm">สถานะ</th>
+                          <th class="th-sm">แก้ไข</th>
+                          <!-- <th class="th-sm">ยกเลิก</th> -->
+                        </tr>
+                      </thead>
+                      <tbody class="text-center">
+                        <% for(const [key, user] of Object.entries(data))  {%>
+                        <tr class="text-center">
+                          
+                          <td> <%= user.name %> </td>
+                          <td> <img src="<%= pic[key] %>" width="50px" height="50px"> </td>
+                          <td> <%= user.email %> </td>
+                          <td> <%= user.phone %> </td>
+                          <td> <%= user.point %> </td>
+                          <td class="text-center">
+                            <span>
+                              <h6>
+                                <% if(user.status == 0) {%>
+                                  <span class="badge bg-warning text-dark">บุคคลธรรมดา</span>
+                                  <% } else if(user.status == 1) {%>
+                                    <span class="badge bg-success text-dark">สมาชิก</span>
+                                  <% } else{%>
+                                  <span class="badge badge-primary text-dark">แอดมิน</span>
+                                  <% } %>
+                              </h6>
+                            </span>
+                          </td>
+                          <td class="text-center">
+                            <span>
+                              <button
+                                type="button"
+                                class="btn btn-primary btn-rounded btn-sm my-0"
+                                onclick="_edit('<%=user.userID%>')"
+                              >
+                                <i class="far fa-edit"></i> edit
+                              </button></span
+                            >
+                          </td>
+                        </tr>
+                        <% }; %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div style="height: 300px"></div>
+      </div>
+
+      <!-- Modal: insert -->
+      <div
+        class="modal fade"
+        id="modalinsert"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+      
+      </div>
+      <!-- Modal: insert -->
+    </main>
+    <!--Main Layout-->
+    <%- //include('footer') %>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- Custom scripts -->
+    <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+      $(document).ready(function () {
+        // SideNav Initialization
+        $(".button-collapse").sideNav();
+        //data table
+        $("#dtBasicExample").DataTable();
+        $(".dataTables_length").addClass("bs-select");
+
+        $(".mdb-select").materialSelect();
+      });
+      // MDB Lightbox Init
+      $(function () {
+        $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+      });
+
+      switch (window.location.search) {
+        case "?alert=update-success":
+                toastr.success("แก้ข้อมูลเสร็จสิ้น");
+                break;
+        case "?alert=deposit-success":
+          toastr.success("ยืนยันการโอนเงินเสร็จสิ้น");
+          break;
+        case "?alert=delete-success":
+          toastr.warning("ยกเลิกการโอนเสร็จสิ้น");
+          break;
+      }
+     
+
+      function _edit(id) {
+        window.location.href = "/admin/member/edit/" + id;
+      }
+
+      function _delete(id) {
+        const swalWithBootstrapButtons = Swal.mixin({
+          customClass: {
+            confirmButton: "btn btn-success",
+            cancelButton: "btn btn-danger",
+          },
+          buttonsStyling: false,
+        });
+
+        swalWithBootstrapButtons
+          .fire({
+            title: "คุณต้องการลบ?",
+            //text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "ลบข้อมูล",
+            cancelButtonText: "ยกเลิก",
+            reverseButtons: true,
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              window.location.href = "/admin/user/delete?id=" + id;
+            }
+          });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,276 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit">
+
+<style>
+    body {
+        background-color: #f8f8f8;
+        font-family: Kanit;
+    }
+
+    header {
+        font-family: Kanit;
+    }
+
+    .side-nav.wide .logo-wrapper.sn-ad-avatar-wrapper a img {
+        max-width: 5.5rem;
+        padding: 0;
+    }
+
+    .mdb-skin .side-nav .collapsible li .collapsible-header.active {
+        color: #ddba0b;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .collapsible .waves-effect:active {
+        color: #ddba0b;
+    }
+
+    .collapsible .waves-effect:hover {
+        color: #ddba0b;
+    }
+
+    .navbar {
+        font-weight: 300;
+        -webkit-box-shadow: 0 2px 5px 0 rgb(0 0 0 / 0%), 0 2px 10px 0 rgb(0 0 0 / 0%);
+        box-shadow: 0 2px 5px 0 rgb(0 0 0 / 0%), 0 2px 10px 0 rgb(0 0 0 / 0%);
+    }
+
+    .mdb-skin .navbar {
+        color: #fff;
+        background-color: rgb(248, 248, 248, 0.94);
+    }
+
+    .mdb-skin .side-nav {
+        -webkit-box-shadow: 0 0px 0px 0 rgb(0 0 0 / 0%), 0 0px 0px 0 rgb(0 0 0 / 0%);
+        background-color: hsla(120, 100%, 50%, 0);
+        border-radius: 0px 23px 23px 0px;
+    }
+
+    .Rectangle {
+        border: 5px;
+        border-radius: 11px;
+        background-color: #ffffff;
+    }
+
+    .mdb-skin .navbar.double-nav a {
+        color: #9c6a48;
+    }
+
+    .side-nav .collapsible .fass,
+    .side-nav .collapsible .fabb,
+    .side-nav .collapsible .farr {
+        margin-right: 13px;
+        font-size: 1.4rem;
+    }
+
+    .side-nav .collapsible .fad {
+        margin-right: 13px;
+        font-size: 0.8rem;
+    }
+</style>
+
+<!--Double navigation-->
+<header>
+    <!-- Sidebar navigation -->
+    <div id="slide-out" class="side-nav fixed wide">
+        <ul class="custom-scrollbar">
+            <!-- Logo -->
+            <li>
+                <div class="logo-wrapper sn-ad-avatar-wrapper">
+                    <a href="#"><img class="Rectangle"
+                            src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/Trakantapathai.jpg"
+                            width="35px" height="35px"><span>ตระการตาผ้าไทย</span></a>
+                </div>
+            </li>
+            <!--/. Logo -->
+            <!-- Side navigation links -->
+            <li>
+
+                <div style="margin-top: 50px;">
+
+                </div>
+                <ul class="collapsible collapsible-accordion mt-3">
+                    <% if(role=='Owner') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5 class="mt-1"><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/member" id="nav-user" class="collapsible-header waves-effect">
+                            <h5 class="mt-1"><i class="fas fass fa-3x fa-users"></i>สมาชิก</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/app/list" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5 class="mt-1"><i class="fas fass fa-3x fa-file-alt" style="width: 28px;"></i>รายงานออเดอร์</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/app/list-sum" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5 class="mt-1"><i class="fas fass fa-3x fa-clipboard-list" style="width: 28px;"></i>รายงานยอดขาย</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/user/" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5 class="mt-1"><i class="fas fass fa-3x fa-user-cog"></i>ผู้ใช้งาน</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="collapsible-header waves-effect arrow-r">
+                            <h5 class="mt-1"><i class="fas fass fa-user-clock"></i>ประวัติการใช้งาน<i
+                                    class="fas fad fa-angle-down rotate-icon"></i></h5>
+                        </a>
+                        <div class="collapsible-body">
+                            <ul>
+                                <li>
+                                    <a onMouseOver="this.style.color='#ddba0b'" onMouseOut="this.style.color='#FFF'"
+                                        href="/history-login"
+                                        class="collapsible-header waves-effect">ประวัติการเข้าใช้งานระบบ</a>
+                                </li>
+                                <li>
+                                    <a onMouseOver="this.style.color='#ddba0b'" onMouseOut="this.style.color='#FFF'"
+                                        href="/history-process"
+                                        class="collapsible-header waves-effect">ประวัติการทำรายการ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <% 
+                }  
+%>
+<% if(role=='Data Analyst') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app/view" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/member/view" id="nav-user" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-3x fa-users"></i>สมาชิก</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/app/list/view" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="far farr fa-3x fa-file-alt"></i>รายงานการขาย</h5>
+                        </a>
+                    </li>
+                    <% 
+                }  
+%>
+<% if(role=='HR') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app/view" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/member/view" id="nav-user" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-3x fa-users"></i>สมาชิก</h5>
+                        </a>
+                    </li>
+                    
+                    <% 
+                }  if(role=='Packing') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app/view" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    
+                    <% 
+                }  if(role=='Sale Admin') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/member/view" id="nav-user" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-3x fa-users"></i>สมาชิก</h5>
+                        </a>
+                    </li>
+                    
+                    <% 
+                }  if(role=='Admin') 
+                    {
+                    %>
+                    <li class="my-3"><a href="/app" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-7x fa-box-open"></i>ออเดอร์สินค้า</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/member" id="nav-user" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-3x fa-users"></i>สมาชิก</h5>
+                        </a>
+                    </li>
+                    <li class="my-3"><a href="/user/" id="nav-bank" class="collapsible-header waves-effect">
+                            <h5><i class="fas fass fa-3x fa-user-cog"></i>ผู้ใช้งาน</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="collapsible-header waves-effect arrow-r">
+                            <h5><i class="fas fass fa-user-clock"></i>ประวัติการใช้งาน<i
+                                    class="fas fad fa-angle-down rotate-icon"></i></h5>
+                        </a>
+                        <div class="collapsible-body">
+                            <ul>
+                                <li>
+                                    <a onMouseOver="this.style.color='#ddba0b'" onMouseOut="this.style.color='#FFF'"
+                                        href="/history-login"
+                                        class="collapsible-header waves-effect">ประวัติการเข้าใช้งานระบบ</a>
+                                </li>
+                                <li>
+                                    <a onMouseOver="this.style.color='#ddba0b'" onMouseOut="this.style.color='#FFF'"
+                                        href="/history-process"
+                                        class="collapsible-header waves-effect">ประวัติการทำรายการ</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <% 
+                }  
+%>
+                    <br>
+                    <hr>
+                    <li>
+                        <a class="collapsible-header waves-effect arrow-r">
+                            <i class="fas fa-user"></i><%= username %><i class="fas fad fa-angle-down rotate-icon"></i>
+                        </a>
+                        <div class="collapsible-body">
+                            <ul>
+                                <li><a onMouseOver="this.style.color='#ddba0b'" onMouseOut="this.style.color='#FFF'"
+                                        href="/checklogin/signout" id="nav-user"
+                                        class="collapsible-header waves-effect">
+                                        ออกจากระบบ</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </li>
+
+                </ul>
+            </li>
+        </ul>
+        <div class="sidenav-bg rgba-blue-strong"></div>
+    </div>
+    <!-- Navbar -->
+    <nav class="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav">
+        <!-- SideNav slide-out button -->
+        <div class="float-left">
+            <a href="#" data-activates="slide-out" class="button-collapse"><i class="fas fa-bars"></i></a>
+        </div>
+        <!-- Breadcrumb-->
+        <div class="breadcrumb-dn mr-auto">
+            <h4 class="ml-3 text-dark">Trakanta</h4>
+        </div>
+        <!-- <ul class="nav navbar-nav nav-flex-icons ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-user"></i> <span class="clearfix d-none d-sm-inline-block"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/signout">ออกจากระบบ</a>
+                </div>
+            </li>
+        </ul> -->
+    </nav>
+    <!-- /.Navbar -->
+</header>
+<!--/.Double navigation-->

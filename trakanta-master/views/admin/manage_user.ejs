@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Trakanta</title>
+  <%- include('../head') %>
+  <!-- datatable -->
+  <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"
+    integrity="sha512-rKFvwjvE4liWPlFnvH4ZhRDfNZ9FOpdkD/BU5gAIA3VS3vOQrQ5BjKgbO3kxebKhHdHcNUHLqxQYSoxee9UwgA=="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.js"
+    integrity="sha512-/McISOEKVzVvgu12/1Hk8dSrbKBShnKn79/R50ysl5qWR1zgj347kOT8LJJvInxHDSPmiBG9vg5AhMx6rcELJg=="
+    crossorigin="anonymous"></script>
+  <!-- Your custom styles (optional) -->
+  <style>
+    th {
+      white-space: nowrap;
+    }
+
+    .scroll {
+      overflow: scroll;
+      height: 400px;
+    }
+
+    .double-nav .breadcrumb-dn {
+      color: #fff;
+    }
+
+    .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+      display: none;
+    }
+
+    .popup {
+      width: 900px;
+      margin: auto;
+      text-align: center
+    }
+
+    .popup img {
+      width: 200px;
+      height: 200px;
+      cursor: pointer
+    }
+
+    .show {
+      z-index: 999;
+      display: none;
+    }
+
+    .show .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .66);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .show .img-show {
+      width: 600px;
+      height: 400px;
+      background: #FFF;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      overflow: hidden
+    }
+
+    .img-show span {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      cursor: pointer;
+    }
+
+    .img-show img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .mdb-skin .side-nav .collapsible li .collapsible-header:hover {
+      border-radius: 0px 9px 9px 0px;
+      color: #ddba0b;
+      margin-top: 5px;
+      margin-right: 40px;
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .total-price {
+      width: 143px;
+      height: 47px;
+      margin: 35px 13.5px 15px 11.5px;
+      padding: 8px 46.5px 8px 41.5px;
+      border-radius: 10px;
+      background-color: #b5b5b5;
+    }
+
+    @media only screen and (max-width: 767px) {
+      .text-right {
+        text-align: center !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+  <%- include('navigation') %>
+
+  <!--Main Layout-->
+  <main>
+    <div class="container-fluid " id="app">
+      <h2>ผู้ใช้งาน</h2>
+      <div class="mt-3"> </div>
+        <!-- Button trigger modal -->
+        <!-- Button trigger modal -->
+        <button type="button" style="border-radius: 8px;" class="btn btn-success" data-toggle="modal"
+          data-target="#exampleModal">
+          สร้างผู้ใช้งาน
+        </button>
+
+        <!-- Create User Modal -->
+        <div class="modal fade mt-5" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">ผู้ใช้งาน</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="/user/createuser" method="POST">
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputName" style="position: initial; justify-content: end;">ชื่อ-นามสกุล <span style="color: red;">*</span></label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="text" class="form-control" name="name" v-model="name" id="inputName"
+                          placeholder="ชื่อ-นามสกุล" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputEmail" style="position: initial; justify-content: end;">อีเมล</label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="email" class="form-control" name="email" v-model="email" id="inputEmail"
+                          placeholder="อีเมล" >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputTelno" style="position: initial; justify-content: end;">เบอร์โทร</label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="tel" class="form-control" id="inputTelno" name="telno" v-model="telno"
+                          @keypress="isNumber($event)" placeholder="เบอร์โทร" maxlength="10" minlength="9" >
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputTelno" style="position: initial; justify-content: end;">บทบาท <span style="color: red;">*</span></label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <select name="role" v-model="role" class="form-control" required>
+                          <option style="font-family:Kanit;" value="" disabled selected>เลือกบทบาท</option>
+                          <option value="Owner">Owner</option>
+                          <option value="Data Analyst">Data Analyst</option>
+                          <option value="Admin">Admin</option>
+                          <option value="HR">HR</option>
+                          <option value="Packing">Packing</option>
+                          <option value="Sale Admin">Sale Admin</option>
+                        </select>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputUsername" style="position: initial; justify-content: end;">ชื่อผู้ใช้ <span style="color: red;">*</span></label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="text" class="form-control" name="username" v-model="username" id="inputUsername"
+                          placeholder="ชื่อผู้ใช้" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputPassword" style="position: initial; justify-content: end;">รหัส <span style="color: red;">*</span></label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="password" class="form-control" name="password" v-model="password"
+                          id="inputPassword" placeholder="รหัส" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 text-center">
+                    <div class="form-group row">
+                      <div class="col-md-4 text-right my-auto">
+                        <label for="inputConfirmPassword"
+                          style="position: initial; justify-content: end;">ยืนยันรหัสผ่าน <span style="color: red;">*</span></label>
+                      </div>
+                      <div class="col-md-8 mt-1">
+                        <input type="password" class="form-control" name="confirmpassword" v-model="confirmpassword"
+                          id="inputConfirmPassword" placeholder="ยืนยันรหัสผ่าน" required @keyup="checkpassword()">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <button v-if="check==true" type="submit" class="btn btn-brown ">บันทึก</button>
+                    <button v-else-if="check==false" type="submit" class="btn btn-brown "   >บันทึก</button>
+                  </div>
+
+                </form>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+        <!-- End Create User -->
+     
+      <div class="card card-cascade narrower mt-5">
+        <section>
+          
+          <div class="row">
+            <div class="col-12">
+              <div class="card-body">
+                <div class="table-responsive text-nowrap">
+                  <span class="table-add float-right mb-3 mr-2" style="margin-top: 4px"><a href="#!"
+                      class="text-success" data-toggle="modal" data-target="#modalinsert"><i class="fas fa-plus fa-2x"
+                        aria-hidden="true"></i></a>
+                  </span>
+                  <!-- <table id="tbl-data"></table> -->
+                  <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                      <tr class="text-center">
+                        <th class="font-18">#</th>
+                        <th class="font-18">ชื่อผู้ใช้</th>
+                        <th class="font-18">ชื่อ-นามสกุล</th>
+                        <th class="font-18">อีเมล</th>
+                        <th class="font-18">เบอร์โทร</th>
+                        <th class="font-18">ตำแหน่ง</th>
+                        <th class="font-18">วันที่</th>
+                        <th class="font-18">จัดการ</th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-center">
+                      <% for(const [key, user] of Object.entries(data))  {%>
+                      <tr>
+                        <td class="font-18"></td>
+                        <td class="font-18">
+                          <%= user.username %>
+                        </td>
+                        <td class="font-18"><%= user.name %></td>
+                        <td class="font-18"><%= user.email %></td>
+
+
+                        <td class="font-18"><%= user.telno %></td>
+                        <td class="font-18"><%= user.role %></td>
+                        <td class="font-18"><%= moment(user.date).format('DD MMMM  YYYY, h:mm:ss a');  %></td>
+                        <td class="font-18">
+                          <a class="btn btn-warning btn-sm" href="/user/<%=user._id%>"><i
+                              class="fas fa-edit"></i>
+                          </a>
+                          <button class="btn btn-danger btn-sm" type="button"
+                            v-on:click="delUser('<%=user.username%>')"><i class="far fa-trash-alt"></i></button>
+                        </td>
+
+                      </tr>
+                      <%}%>
+                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div style="height: 300px"></div>
+      
+      
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Detail
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal: insert -->
+    <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true">
+    </div>
+    <!-- Modal -->
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            Detail
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Understood</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </main>
+  <!--Main Layout-->
+  <%- //include('footer') %>
+
+  <script src="/js/jquery-3.4.1.min.js"></script>
+  <!-- Bootstrap tooltips -->
+  <script type="text/javascript" src="/js/popper.min.js"></script>
+  <!-- Bootstrap core JavaScript -->
+  <script type="text/javascript" src="/js/bootstrap.js"></script>
+  <!-- MDB core JavaScript -->
+  <script type="text/javascript" src="/js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+
+  <!-- MDBootstrap Datatables  -->
+  <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+  <!-- sweetalert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                      <!-- Custom scripts -->
+                      <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+                      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+                      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+                      <!-- MDBootstrap Datatables  -->
+                      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+   
+                      <!-- sweetalert2 -->
+                      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                      <script type="text/javascript">
+                        $(document).ready(function () {
+                          // SideNav Initialization
+                          $(".button-collapse").sideNav();
+                          //data table
+                          $('#myModal').on('shown.bs.modal', function () {
+                            $('#myInput').trigger('focus')
+                          })
+                          // DataTable initialisation
+                          
+                          $('#example').DataTable({
+                            "paging": false,
+                            "autoWidth": true,
+                            
+                            "order": [
+                              [0, "desc"]
+                            ]
+                          });
+
+                          $(".dataTables_length").addClass("bs-select");
+
+                          $(".mdb-select").materialSelect();
+                        });
+
+                        // MDB Lightbox Init
+                        $(function () {
+                          $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+                        });
+                        
+                        
+                        switch (window.location.search) {
+                          case "?alert=update-success":
+                            toastr.success("ยืนยันการจองเรียบร้อยแล้วค่ะ");
+                            break;
+                          case "?alert=create-success":
+                            toastr.success("สร้างผู้ใช้งานเรียบร้อยแล้ว");
+                            break;
+                          case "?alert=error-username":
+                            toastr.warning("username ถูกใช้ไปแล้ว");
+                            break;
+                          case "?alert=confirm-success":
+                            toastr.success("ยืนยันโต๊ะเสร็จสิ้น");
+                            break;
+                        }
+                        
+                        function editUser(id) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการยืนยันการแก้ไขข้อมูลผู้ใช้ ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "info",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยัน",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/user/del/" + id ;
+                              }
+                            });
+                        }
+                        function delUser(id) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการยืนยันการลบข้อมูลผู้ใช้ ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยัน",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/user/del/" + id ;
+                              }
+                            });
+                        }
+                        new Vue({
+                          el: "#app",
+                          data() {
+                            return {
+                              check: false,
+                              displayName: 'fff',
+                              name: '',
+                              password: '',
+                              confirmpassword: '',
+                              email: '',
+                              username: '',
+                              userId: '',
+                              pictureUrl: '',
+                              temail: '',
+                              qrcode: '',
+                              id: 0,
+                              all_order: [{
+                                order_id: 0
+                              }],
+                              row: '',
+                              telno: '',
+                              role: 'เลือกบทบาท'
+                            }
+
+                          },
+                          created() {
+                            // this.loadUsers();
+                          },
+                          methods: {
+                          
+                            checkpassword: function () {
+                              console.log("cf = " + this.confirmpassword.length)
+                              console.log("pw = " + this.password.length)
+                              console.log("cf = " + this.confirmpassword)
+                              console.log("pw = " + this.password)
+                              if (this.confirmpassword.length == this.password.length && this.confirmpassword ==
+                                this.password) {
+
+                                Swal.fire(
+                                  'รหัสผ่านตรงกัน',
+                                  '',
+                                  'success'
+                                )
+                                this.check = true;
+                              } else {
+                                this.check = false;
+                              }
+                            },
+                            isNumber: function (evt) {
+                              evt = (evt) ? evt : window.event;
+                              var charCode = (evt.which) ? evt.which : evt.keyCode;
+                              if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+                                evt.preventDefault();;
+                              } else {
+                                return true;
+                              }
+                            },
+                            async _createUser() {
+                              var od_id = 0;
+                              axios.post('/insertorder', {
+                                  data: results
+                                })
+                                .then((response) => {
+                                  console.log(response);
+                                  // if (response.status == 200) {
+                                  //   window.location.href = "/app";
+                                  // }
+                                }, (error) => {
+                                  console.log(error);
+                                });
+                            }
+                          }
+                        })
+                      </script>
+</body>
+
+</html>

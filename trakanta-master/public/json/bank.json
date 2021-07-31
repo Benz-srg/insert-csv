@@ -1,0 +1,123 @@
+
+[
+    {
+      "_id": "5dc0089204391f00182fb3f1",
+      "backgroundColor": "#199cc5",
+      "logo": "/images/banks/kk.svg",
+      "display": "ธนาคารเกียรตินาคิน",
+      "name": "Kiatnakin Bank",
+      "sort": 1
+    },
+    {
+      "_id": "5dc0089204391f00182fb3f2",
+      "backgroundColor": "#0a4ab3",
+      "logo": "/images/banks/tcrb.svg",
+      "display": "Thai Credit Retail Bank",
+      "name": "Thai Credit Retail Bank",
+      "sort": 2
+    },
+    {
+      "_id": "5dc0089204391f00182fb3e5",
+      "backgroundColor": "#1e4598",
+      "logo": "/images/banks/bbl.svg",
+      "display": "ธนาคารกรุงเทพ",
+      "name": "Bangkok Bank",
+      "sort": 3
+    },
+    {
+      "_id": "5dc0089204391f00182fb3e6",
+      "backgroundColor": "#138f2d",
+      "logo": "/images/banks/kbank.svg",
+      "display": "ธนาคารกสิกร",
+      "name": "Kasikornbank",
+      "sort": 4
+    },
+    {
+      "_id": "5dc0089204391f00182fb3e9",
+      "backgroundColor": "#4e2e7f",
+      "logo": "/images/banks/scb.svg",
+      "display": "ธนาคารไทยพาณิชย์",
+      "name": "Siam Commercial Bank",
+      "sort": 5
+    },
+    {
+      "_id": "5dc0089204391f00182fb3e7",
+      "backgroundColor": "#1ba5e1",
+      "logo": "/images/banks/ktb.svg",
+      "display": "ธนาคารกรุงไทย",
+      "name": "Krungthai Bank",
+      "sort": 6
+    },
+    {
+      "_id": "5dc0089204391f00182fb3ee",
+      "backgroundColor": "#f57d23",
+      "logo": "/images/banks/ghb.svg",
+      "display": "Government Housing Bank",
+      "name": "Government Housing Bank",
+      "sort": 6
+    },
+    {
+      "_id": "5dc0089204391f00182fb3eb",
+      "backgroundColor": "#7e2f36",
+      "logo": "/images/banks/cimb.svg",
+      "display": "CIMB Thai Bank",
+      "name": "CIMB Thai Bank",
+      "sort": 7
+    },
+    {
+      "_id": "5dc0089204391f00182fb3ec",
+      "backgroundColor": "#fec43b",
+      "logo": "/images/banks/bay.svg",
+      "display": "Bank of Ayudhya (Krungsri)",
+      "name": "Bank of Ayudhya (Krungsri)",
+      "sort": 8
+    },
+    {
+      "_id": "5dc0089204391f00182fb3ea",
+      "backgroundColor": "#1583c7",
+      "logo": "/images/banks/citi.svg",
+      "display": "Citibank",
+      "name": "Citibank",
+      "sort": 9
+    },
+    {
+      "_id": "5dc0089204391f00182fb3ef",
+      "backgroundColor": "#4b9b1d",
+      "logo": "/images/banks/baac.svg",
+      "display": "ธนาคารเพื่อนการเกษตรและสหกรณ์",
+      "name": "Bank for Agriculture and Agricultural Cooperatives",
+      "sort": 10
+    },
+    {
+      "_id": "5dc0089204391f00182fb3f0",
+      "backgroundColor": "#fc4f1f",
+      "logo": "/images/banks/tbank.svg",
+      "display": "ธนาคารธนชาติ",
+      "name": "Thanachart Bank",
+      "sort": 11
+    },
+    {
+      "_id": "5dc0089204391f00182fb3e8",
+      "backgroundColor": "#1279be",
+      "logo": "/images/banks/tmb.svg",
+      "display": "ธนาคารทหารไทย",
+      "name": "TMB Bank",
+      "sort": 12
+    },
+    {
+      "_id": "5dc0089204391f00182fb3ed",
+      "backgroundColor": "#eb198d",
+      "logo": "/images/banks/gsb.svg",
+      "display": "ธนาคารออมสิน",
+      "name": "Government Savings Bank",
+      "sort": 13
+    },
+    {
+      "_id": "5e300012c1ac209cb3003c8e",
+      "backgroundColor": "#c50f1c",
+      "logo": "/images/banks/icbc.svg",
+      "display": "ICBC",
+      "name": "Industrial and Commercial Bank of China (Thai)",
+      "sort": 14
+    }
+  ]

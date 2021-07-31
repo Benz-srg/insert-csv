@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+    <%- include('head') %>
+  <title>Trakanta</title>
+</head>
+
+<body>
+
+  <!-- Start your project here-->
+  <div id="app" style="height: 70vh">
+    <div class="flex-center flex-column">
+      <img class="Rectangle" style="border-radius: 20px;"
+                            src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/Trakantapathai.jpg"
+                            width="8%">
+                            <div class="mt-3"></div>
+      <form action="/checklogin/login" name="myform" id="coupon-form" method="post">
+          <div class="md-form">
+            <i class="fas fa-user prefix"></i>
+            <input type="text" id="inputIconEx2" name="username" v-model="username" class="form-control">
+            <label for="inputIconEx2">ชื่อผู้ใช้</label>
+          </div>
+          <div class="md-form">
+            <i class="fas fa-lock prefix"></i>
+            <input type="password" v-model="password" name="password" id="inputValidationEx2" class="form-control validate">
+            <label for="inputValidationEx2" data-error="wrong" data-success="right">รหัสผ่านเข้าสู่ระบบ</label>
+          </div>
+          <div class="text-center"><button type="submit" class="btn btn-brown">เข้าสู่ระบบ</button></div>
+          
+        </form>
+      
+      
+      <!-- <h5 class="animated fadeIn mb-3">Thank you for using our product. We're glad you're with us.</h5>
+      <p class="animated fadeIn text-muted">MDB Team</p> -->
+
+    </div>
+  </div>
+
+  <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/js/popper.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+ 
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+  <script type="text/javascript" src="/js/mdb.js"></script>
+  <script type="text/javascript" src="/js/vendor/datatables/js/jquery.dataTables.min.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.6.0/sdk.js"></script>
+  <script type="text/javascript" src="/js/vendor/datatables/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+  <!-- Optional: include a polyfill for ES6 Promises for IE11 -->
+  <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+  <script type="text/javascript">
+  $(document).ready(function () {
+
+  });
+
+  async function scanCode() {
+    const result = await liff.scanCode()
+    window.location.href = result.value;
+  };
+
+  new Vue({
+    
+  el: "#app",
+  data: {
+    username: '',
+    password: ''
+  },
+  created() {
+
+  },
+  methods: {
+    submitForm: function () {
+      if(this.username == ''){
+        Swal.fire({
+          icon: 'warning',
+          title: 'โปรดระบุชื่อผู้ใช้',
+        })
+      }else if(this.password == ''){
+        Swal.fire({
+          icon: 'warning',
+          title: 'โปรดกรอกรหัสผ่าน'
+        })
+      }else{
+        document.myform.submit();
+      }
+    }
+  }
+})
+  </script>
+</body>
+</html>

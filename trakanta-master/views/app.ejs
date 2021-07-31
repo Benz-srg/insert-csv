@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <%- include('head') %>
+  <title>KruaZappStreet</title>
+</head>
+<style>
+  .navbar {
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  .navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+  .navbar a:hover {
+    background: #f1f1f1;
+    color: black;
+  }
+  .navbar a.active {
+    background-color: #4CAF50;
+    color: white;
+  }
+  .main {
+    padding: 16px;
+    margin-bottom: 30px;
+  }
+  .img {
+    border-radius: 50%;
+  }
+  .card {
+    margin: 0 auto;
+    float: none;
+
+  }
+  .center {
+    text-align: center;
+  }
+  .col-md-4 {
+    width: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .col-md-6 {
+    width: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .col-md-3 {
+    width: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+  .btn-menu {
+    background-color: #15466e;
+    color: #fff;
+  }
+  .member-card {
+    flex-wrap: unset;
+  }
+</style>
+
+<body>
+  <div id="app" class="container">
+    <!-- <img src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/KruaZap/logo/Logo.png" width="40%" alt=""> -->
+    
+    <div class="col-md-12 text-center mt-2" style="text-align: center;">
+      <div class="text-center mt-2">
+        <div class="row text-center">
+          <div class="col-md-6">
+            <div class="md-form">
+              <i class="fas fa-user prefix"></i>
+              <input type="text" id="inputIconEx2" class="form-control">
+              <label for="inputIconEx2">E-mail address</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div><a href="/registerpage/coupon_form" class="btn">
+                <img src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/KruaZap/logo/list-gift-voucher.png" alt=""></a></div>
+            <div>
+              <label>ซื้อคูปองบุฟเฟ่ต์</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center mt-2">
+      <div class="row">
+        <div class="col-md-4">
+          <div><a v-bind:href="'/user/rev/' + userId" class="btn">
+              <img src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/KruaZap/logo/clipboard.png" alt=""></a></div>
+          <div>
+            <label>รายการจองโต๊ะ</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div><a v-bind:href="'/user/coupon/' + userId" class="btn">
+              <img src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/KruaZap/logo/gift-voucher.png" alt=""></a></div>
+          <div>
+            <label>คูปองของฉัน</label>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div><a v-bind:href="'/user/member/' + userId" class="btn">
+              <img src="https://raw.githubusercontent.com/Benz-TT/TectonyLineOA/main/KruaZap/logo/file.png" alt=""></a></div>
+          <div>
+            <label>ประวัติสมาชิก</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="GSCCModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel"></h4>
+          </div>
+          <div class="modal-body text-center">
+            <img v-bind:src="qrcode" title="Link to my Website" />
+          </div>
+          <div class="modal-footer text-center">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-5" height="150px;"></div>
+  <%- include('footer') %>
+  <script type="text/javascript" src="/js/jquery-3.4.1.min.js"></script>
+  <script type="text/javascript" src="/js/popper.min.js"></script>
+  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+  <script type="text/javascript" src="/js/mdb.js"></script>
+  <script type="text/javascript" src="/js/vendor/datatables/js/jquery.dataTables.min.js"></script>
+  <script src="https://static.line-scdn.net/liff/edge/versions/2.6.0/sdk.js"></script>
+  <script type="text/javascript" src="/js/vendor/datatables/js/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+
+
+    });
+    async function scanCode() {
+      const result = await liff.scanCode()
+      window.location.href = result.value;
+    };
+
+    new Vue({
+      el: "#app",
+      data: {
+        displayName: '',
+        userId: '',
+        pictureUrl: '',
+        temail: '',
+        qrcode: ''
+      },
+      created() {
+        // this.loadUsers();
+      },
+      methods: {
+        async loadUsers() {
+          // await liff.init({ liffId: "1655587935-3Dk9ZgR4" })
+          await liff.init({
+            liffId: `1655587935-3Dk9ZgR4`
+          }).catch((err) => {
+            throw err;
+          });
+          if (liff.isLoggedIn()) {
+
+            let getOpenid = await liff.getDecodedIDToken();
+            let getProfile = await liff.getProfile();
+            console.log(getProfile)
+            console.log(getOpenid)
+            this.displayName = getProfile.displayName;
+            this.userId = getProfile.userId;
+            this.pictureUrl = getProfile.pictureUrl;
+            this.qrcode =
+              "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=https://member.kruazappstreet.com/admin/member-point/" +
+              this.userId + "&choe=UTF-8";
+            this.temail = getOpenid.email;
+            axios.post('/checklogin', {
+                name: getProfile.displayName,
+                userId: getProfile.userId,
+                email: getOpenid.email
+              })
+              .then(response => {
+                console.log('ส่ง Axios')
+                console.log(response)
+                // if(response.status == 200){
+                //   window.location.href = "/page";
+                // }
+              })
+              .catch(e => {
+                this.errors.push(e)
+              })
+          } else {
+            liff.login();
+          }
+        }
+
+      }
+    })
+  </script>
+</body>
+
+</html>
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>User</title>
+    <%- include('head') %>
+    <link href="/css/addons/datatables.min.css" rel="stylesheet">
+
+    <!-- Your custom styles (optional) -->
+    <style>
+        .scroll {
+            overflow: scroll;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+    <%- //include('../navigation') %>
+
+    <!--Main Layout-->
+    <main>
+        <div class="container-fluid mt-3">
+            <div class="mt-1">
+                <a href="/home"><button class="btn btn-danger btn-rounded btn-sm my-0 passingID">Back</button></a>
+            </div>
+            <div class="card card-cascade narrower mt-5 text-center">
+                <section>
+                    <img src="/uploads/<%=id%>" width="80%" height="auto"/>
+                </section>
+            </div>
+            <div style="height: 300px"></div>
+        </div>
+
+        <!-- Modal: insert -->
+        <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+
+        </div>
+        <!-- Modal: insert -->
+    </main>
+    <!--Main Layout-->
+    <%- //include('footer') %>
+
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript" src="/js/page/nav-active.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+         
+        });
+    </script>
+</body>
+
+</html><

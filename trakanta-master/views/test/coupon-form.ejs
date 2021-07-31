@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>User</title>
+    <%- include('../head') %>
+    <link href="/css/addons/datatables.min.css" rel="stylesheet">
+
+    <!-- Your custom styles (optional) -->
+    <style>
+        .scroll {
+            overflow: scroll;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+    <%- //include('../navigation') %>
+
+    <!--Main Layout-->
+    <main>
+        <div id="app" class="container-fluid">
+            <div class="mt-1">
+                <a href="/home"><button class="btn btn-danger btn-rounded btn-sm my-0 passingID">Back</button></a>
+            </div>
+            <div class="card card-cascade narrower mt-2">
+                <section>
+                    <form action="/user/deposit/coupon" enctype="multipart/form-data" id="coupon-form" method="post">
+
+                        <div class="form-group text-center">
+
+                            <div class="form-group text-center mb-3">
+                                <h3 class="mt-4">ซื้อคูปอง / บัตรของขวัญ</h3>
+                                <div class="col-md-12 mt-3">
+
+                                    <label for="exampleFormControlTextarea1">ชื่อลูกค้า</label>
+                                    <input type="text" class="form-control" placeholder="ชื่อ นามสกุล ผู้จอง"
+                                        name="name" required />
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <label for="exampleFormControlTextarea1">เบอร์โทรศัพท์</label>
+                                    <input type="tel" class="form-control" placeholder="หมายเลขโทรศัพท์" name="telno"
+                                        minlength="10" maxlength="10" required />
+                                </div>
+                                <div class="card mx-3 mt-3">
+                                    <div class="card-body">
+                                        <div class="col-md-12 mt-4">
+                                            ประเภทบุฟเฟ่ต์
+                                            <select class="form-control mt-2" name="type" v-on:change="changeItem(rowId, $event)"
+                                                required>
+                                                <option value="699" checked>Thai food lover 699</option>
+                                                <option value="999">Regular 999</option>
+                                                <option value="1199">Premium 1199</option>
+                                                <option value="99">บุฟเฟต์ขนมไทย 99</option>
+                                            </select>
+
+                                            <label class="mt-2" for="exampleFormControlTextarea1">จำนวนคูปอง</label>
+                                            <input placeholder="ระบุจำนวนที่ต้องการซื้อ" type="number" v-model="num"
+                                                v-on:change="changeNum(rowId, $event)" max="100" min="1"
+                                                class="form-control" name="amount" required>
+                                        </div>
+                                        <div class="mt-2 mb-2 text-left">
+                                            <input type="hidden" v-model="selected" name="price">
+                                            <input type="hidden" v-model="discount" name="discount">
+                                            <input type="hidden" v-model="price" name="total">
+                                            
+                                        </div>
+                                        <div class="col-md-6 mt-2 mb-2 text-left">
+                                            <br>จำนวนคูปองที่ซื้อ : {{num}}
+                                            <br>ราคา/ต่อใบ : {{selected}}
+                                            <br>ส่วนลด : {{discount}}
+                                            <br>ยอดโอนทั้งหมด : {{price}}
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12 mt-3">
+                                    <label for="exampleFormControlTextarea1">หลักฐานการโอน</label>
+                                    <div class="file-field">
+                                        <div class="btn btn-primary btn-sm float-left">
+                                            <span>Choose file</span>
+                                            <input type="file" name="uploaded_file" required />
+                                        </div>
+                                        <div class="file-path-wrapper">
+                                            <input class="file-path validate form-control" type="text"
+                                                placeholder="Upload your file">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">บันทึกถึงร้าน</label>
+                                        <textarea class="form-control rounded-0" name="description"
+                                            id="exampleFormControlTextarea1" rows="6"></textarea>
+                                    </div>
+                                </div>
+                                <div class="text-center"><input type="submit" value="ยืนยันการซื้อ"
+                                        class="btn btn-default">
+                                </div>
+
+                            </div>
+                    </form>
+                </section>
+            </div>
+            <div style="height: 300px"></div>
+        </div>
+
+        <!-- Modal: insert -->
+        <div class="modal fade" id="modalinsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+
+        </div>
+        <!-- Modal: insert -->
+    </main>
+    <!--Main Layout-->
+    <%- //include('footer') %>
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <!--  SCRIPTS  -->
+    <!-- JQuery -->
+    <!-- <script type="text/javascript" src="/js/jquery.min.js"></script> -->
+    <script src="/js/jquery-3.4.1.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="/js/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="/js/mdb.min.js"></script>
+    <!-- MDBootstrap Datatables  -->
+    <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript" src="/js/page/nav-active.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#coupon-form').trigger("reset");
+            // Data Picker Initialization
+            $('.datepicker').datepicker({
+                min: new Date()
+            })
+            $('#input_starttime1').pickatime({
+                // Light or Dark theme
+                darktheme: true
+            });
+        });
+        // MDB Lightbox Init
+        $(function () {
+            $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+        });
+
+        switch (window.location.search) {
+            case "?alert=update-success":
+                toastr.success("เพิ่มแต้มเรียบร้อยแล้วค่ะ");
+                break;
+            case "?alert=delete-success":
+                toastr.warning("ลบรายการจองสำเร็จ");
+                break;
+        }
+
+        function _edit(id) {
+            window.location.href = "/admin/profile/" + id;
+        }
+
+        function _delete(id, userid) {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: "btn btn-danger",
+                },
+                buttonsStyling: false,
+            });
+
+            swalWithBootstrapButtons
+                .fire({
+                    title: "คุณต้องการลบ?",
+                    //text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "ลบข้อมูล",
+                    cancelButtonText: "ยกเลิก",
+                    reverseButtons: true,
+                })
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "/admin/delete/" + id + "/" + userid;
+                    }
+                });
+        }
+        new Vue({
+
+            el: "#app",
+            data: {
+                selected: 699,
+                rowId: 10,
+                price: 0,
+                discount: 0,
+                num: 0
+            },
+            created() {
+
+            },
+            methods: {
+                changeItem: function changeItem(rowId, event) {
+                    this.selected = event.target.value;
+                    if (this.selected == 99) {
+                        this.discount = 0;
+                        this.price = (this.selected * this.num) - this.discount;
+                    } else if (this.selected != 99) {
+                        if (this.num != 0) {
+                            if (this.num >= 2) {
+                                this.discount = 50;
+                            }
+                            if (this.num >= 5) {
+                                this.discount = 100;
+                            }
+                            if (this.num >= 10) {
+                                this.discount = 150;
+                            }
+                            if (this.num >= 50) {
+                                this.discount = 200;
+                            }
+                            if (this.num == 1) {
+                                this.discount = 0;
+                            }else{
+                                this.price = (this.selected * this.num) - (this.num * this.discount);
+                            }
+                            
+                        }
+                    }
+
+                },
+                changeNum: function changeItem(rowId, event) {
+                    if (this.selected == 99) {
+                        this.discount = 0;
+                        this.price = (this.selected * this.num) - this.discount;
+                    } else if (this.selected != 99) {
+                        if (this.num >= 2) {
+                                this.discount = 50;
+                            }
+                            if (this.num >= 5) {
+                                this.discount = 100;
+                            }
+                            if (this.num >= 10) {
+                                this.discount = 150;
+                            }
+                            if (this.num >= 50) {
+                                this.discount = 200;
+                            }
+                            if (this.num == 1) {
+                                this.discount = 0;
+                            }else{
+                                this.price = (this.selected * this.num) - (this.num * this.discount);
+                            }
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

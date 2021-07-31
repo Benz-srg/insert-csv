@@ -1,0 +1,80 @@
+.color-1e4598 {
+    background-color: #1e4598;
+}
+
+.color-138f2d {
+    background-color: #138f2d;
+}
+
+.color-1ba5e1 {
+    background-color: #1ba5e1;
+}
+
+.color-1279be {
+    background-color: #1279be;
+}
+
+.color-4e2e7f {
+    background-color: #4e2e7f;
+}
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.1);
+}
+.h5, h5 {
+    font-size: 1rem;
+}
+.mdb-skin .btn-primary {
+    color: #fff;
+    background-color: #3c77e2 !important;
+    margin-top: auto;
+    border-radius: 6px;
+}
+
+.form-control {
+    font-family: 'Kanit';
+}
+
+.color-1583c7 {
+    background-color: #1583c7;
+}
+
+.color-7e2f36 {
+    background-color: #7e2f36;
+}
+
+.color-fec43b {
+    background-color: #fec43b;
+}
+
+.color-eb198d {
+    background-color: #eb198d;
+}
+
+.color-f57d23 {
+    background-color: #f57d23;
+}
+
+.color-4b9b1d {
+    background-color: #4b9b1d;
+}
+
+.color-fc4f1f {
+    background-color: #fc4f1f;
+}
+
+.color-199cc5 {
+    background-color: #199cc5;
+}
+
+.color-0a4ab3 {
+    background-color: #0a4ab3;
+}
+
+.color-c50f1c {
+    background-color: #c50f1c;
+}

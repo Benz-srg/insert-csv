@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Trakanta</title>
+  <%- include('../head') %>
+  <!-- datatable -->
+  <link href="/css/addons/datatables.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"
+    integrity="sha512-rKFvwjvE4liWPlFnvH4ZhRDfNZ9FOpdkD/BU5gAIA3VS3vOQrQ5BjKgbO3kxebKhHdHcNUHLqxQYSoxee9UwgA=="
+    crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.js"
+    integrity="sha512-/McISOEKVzVvgu12/1Hk8dSrbKBShnKn79/R50ysl5qWR1zgj347kOT8LJJvInxHDSPmiBG9vg5AhMx6rcELJg=="
+    crossorigin="anonymous"></script>
+  <!-- Your custom styles (optional) -->
+  <style>
+    th {
+      white-space: nowrap;
+    }
+
+    .scroll {
+      overflow: scroll;
+      height: 400px;
+    }
+
+    .double-nav .breadcrumb-dn {
+      color: #fff;
+    }
+
+    .side-nav.wide.slim .sn-ad-avatar-wrapper a span {
+      display: none;
+    }
+
+    .popup {
+      width: 900px;
+      margin: auto;
+      text-align: center
+    }
+
+    .popup img {
+      width: 200px;
+      height: 200px;
+      cursor: pointer
+    }
+
+    .show {
+      z-index: 999;
+      display: none;
+    }
+
+    .show .overlay {
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .66);
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .show .img-show {
+      width: 600px;
+      height: 400px;
+      background: #FFF;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      overflow: hidden
+    }
+
+    .img-show span {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 99;
+      cursor: pointer;
+    }
+
+    table th:first-child {
+      border-radius: 10px 0 0 10px;
+    }
+
+    table th:last-child {
+      border-radius: 0 10px 10px 0;
+    }
+
+    .img-show img {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+
+
+    .mdb-skin .side-nav .collapsible li .collapsible-header:hover {
+      border-radius: 0px 9px 9px 0px;
+      color: #ddba0b;
+      margin-top: 5px;
+      margin-right: 40px;
+      background-color: rgba(255, 255, 255, 1);
+    }
+
+    .total-price {
+      width: 143px;
+      height: 47px;
+      margin: 35px 13.5px 15px 11.5px;
+      padding: 8px 46.5px 8px 41.5px;
+      border-radius: 10px;
+      background-color: #b5b5b5;
+    }
+
+    .swal2-container .swal2-center .swal2-backdrop-show .swal2-popup {
+      z-index: 999999;
+    }
+
+    ::ng-deep.swal2-container {
+      z-index: 999999;
+    }
+  </style>
+</head>
+
+<body class="fixed-sn mdb-skin">
+  <%- include('navigation') %>
+
+  <!--Main Layout-->
+  <main>
+    <div class="container-fluid " id="app">
+      <h2>ออเดอร์สินค้าและจัดการสินค้า</h2>
+
+      <!-- Button trigger modal -->
+
+      <!-- Create User Modal -->
+      
+      <div class="card card-cascade narrower mt-5">
+        <section>
+          <div class="row">
+            <div class="col-12">
+              <div class="card-body">
+                <div class="table-responsive text-nowrap">
+                  <span class="table-add float-right mb-3 mr-2" style="margin-top: 4px"><a href="#!"
+                      class="text-success" data-toggle="modal" data-target="#modalinsert"><i class="fas fa-plus fa-2x"
+                        aria-hidden="true"></i></a>
+                  </span>
+                  <div class="row">
+                    <div class="col-md-2"><input id="nameFilter" type="text" class="form-control"
+                        placeholder="ค้นหาชื่อ-นามสกุล"></div>
+                    <div class="col-md-2"><input id="codeFilter" type="text" class="form-control"
+                        placeholder="ชื่อสินค้า/รหัสสินค้า"></div>
+                    <div class="col-md-2">
+                      <select id="statusFilter" class="form-control" required>
+                        <option style="font-family:Kanit;" value="" selected>การชำระเงิน</option>
+                        <option value="รอชำระเงิน">รอชำระเงิน</option>
+                        <option value="โอนแล้ว">โอนแล้ว</option>
+                        <option value="ยกเลิกสินค้า">ยกเลิกสินค้า</option>
+                        <option value="รอสรุปยอด">รอสรุปยอด</option>
+                      </select></div>
+                    <div class="col-md-2">
+                      <select id="categoryFilter" class="form-control" required>
+                        <option value="" style="font-family:Kanit;" selected>หมวดหมู่</option>
+                        <option value="ผ้าไหม" style="font-family:Kanit;">ผ้าไหม</option>
+                        <option value="เสื้อไหม">เสื้อไหม</option>
+                        <option value="เสื้อฝ้าย">เสื้อฝ้าย</option>
+                        <option value="เครื่องเงิน">เครื่องเงิน</option>
+                        <option value="กางเกงผ้าฝ้าย">กางเกงผ้าฝ้าย</option>
+                        <option value="กางเกงผ้าไหม">กางเกงผ้าไหม</option>
+                        <option value="ผ้าฝ้าย">ผ้าฝ้าย</option>
+                        <option value="ผ้าคลุมไหล่">ผ้าคลุมไหล่</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4">
+                      <% var predate = moment().subtract(1, "days").format("D/MM/YYYY");
+                        var todate = moment().format("D/MM/YYYY");
+                        var date_value = predate + ' - ' + todate 
+                        if(select_date) {
+                          date_value = select_date
+                        }
+                      %>
+                      <input type="text" class="form-control" name="daterange" value="<%=date_value%>" />
+                    </div>
+                  </div>
+
+                  <div class="my-5">
+                    ยอดรวม <span id="total" class="total-price"></span> บาท
+                  </div>
+                  <table id="example" class="table table-striped row-border" cellspacing="0" width="100%">
+                    <thead style="border-radius: 10px;">
+                      <tr class="text-center" style="color: #fff;
+                      border-radius: 10px;
+                      background-color: #9e7d35;">
+                        <th>รหัสออเดอร์</th>
+                        <th>ชื่อ-นามสกุล</th>
+                        <th>ชื่อสินค้า</th>
+                        <th>รหัสสินค้า</th>
+
+                        <th>สถานะ</th>
+                        <th>หมวดหมู่สินค้า</th>
+                        <!-- <th>การจัดการ</th> -->
+                        <th>แก้ไขล่าสุด</th>
+                        <th>ยอดชำระทั้งหมด</th>
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        
+                        <td></td>
+                        <td></td>
+                        <td>ยอดรวม</td>
+                        <td></td>
+                      </tr>
+                    </tfoot>
+                    <tbody class="text-center">
+                      <% for(const [key, order] of Object.entries(data))  {%>
+                      <tr>
+                        <td><%
+                        let orderid = 'A'
+                        let numorder = order.orderid.toString();
+                      
+                        for(let i = parseInt(numorder.length);i<= 4;i++){
+                          orderid += '0'
+                        } orderid += numorder;%>
+                        <%= orderid %>
+                        </td>
+                        <td><%= order.member_name %></td>
+                        <td><%= order.product_name %></td>
+                        <td><%= order.product_code %></td>
+                        <%if(order.status==0){%>
+                        <td class="text-primary">รอชำระเงิน</td>
+                        <%}else if(order.status == 1){%>
+                        <td class="text-success">โอนแล้ว</td>
+                        <%} else if(order.status == 2){%>
+                        <td class="text-danger">ยกเลิกสินค้า</td>
+                        <%} else if(order.status == 3){%>
+                        <td class="text-warning">รอสรุปยอด</td>
+                        <%}%>
+                        <td><%= order.product_category %></td>
+                       
+                        <td><%= order.modify_date %></td>
+                        <td data-order="<%= parseInt(order.totalprice); %>">
+                          <%= order.totalprice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); %>
+                        </td>
+                      </tr>
+                      <%}%>
+                     
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    <div style="height: 300px"></div>
+
+
+    
+
+  </div>
+  </main>
+  <!--Main Layout-->
+  <%- //include('footer') %>
+                      <script src="/js/jquery-3.4.1.min.js"></script>
+                      <!-- Bootstrap tooltips -->
+                      <script type="text/javascript" src="/js/bootstrap.js"></script>
+                      <!-- MDB core JavaScript -->
+                      <script type="text/javascript" src="/js/mdb.min.js"></script>
+                      <!-- Custom scripts -->
+                      <!-- <script type="text/javascript" src="/js/page/nav-active.js"></script> -->
+                      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+                      <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+                      <!-- MDBootstrap Datatables  -->
+                      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+                      <script type="text/javascript" src="/js/addons/datatables.min.js"></script>
+                      <!-- sweetalert2 -->
+                      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.min.js"></script>
+                      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+                      <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js">
+                      </script>
+                      <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+                      <script type="text/javascript">
+                        $(document).ready(function () {
+                          // SideNav Initialization
+                          $(".button-collapse").sideNav();
+                          //data table
+                          $('#myModal').on('shown.bs.modal', function () {
+                            $('#myInput').trigger('focus')
+                          })
+
+                          var datatable = $('#example').DataTable({
+                            "order": [
+                              [6, "desc"]
+                            ],
+                            "paging": true,
+                            "autoWidth": true,
+                            "footerCallback": function (row, data, start, end, display) {
+                              var api = this.api();
+                              nb_cols = api.columns().nodes().length;
+                              var j = 7;
+                              while (j < nb_cols) {
+                                var pageTotal = api
+                                  .column(j, {
+                                    page: 'current'
+                                  })
+                                  .data()
+                                  .reduce(function (a, b) {
+                                    a = a.toString().replace(/,/g, '');
+                                    b = b.toString().replace(/,/g, '');
+                                    return Number(a) + Number(b);
+                                  }, 0);
+                                // Update footer
+                                $(api.column(j).footer()).html(pageTotal);
+                                document.getElementById("total").innerHTML = pageTotal.toString().replace(
+                                  /\B(?=(\d{3})+(?!\d))/g, ',');;
+                                j++;
+                              }
+                            }
+                          });
+
+                          $(".dataTables_length").addClass("bs-select");
+
+                          $(".mdb-select").materialSelect();
+                          //find by code
+                          $(document).on('keyup', '#codeFilter', function () {
+                            var value = $(this).val();
+                            console.log(value);
+                            datatable.column([2, 3]).search(value).draw();
+                          });
+                          //find by status
+                          $(document).on('change', '#statusFilter', function () {
+                            var value = $(this).val();
+                            console.log(value);
+                            datatable.columns(4).search(value).draw();
+                          });
+                          // find by category
+                          $(document).on('change', '#categoryFilter', function () {
+                            var value = $(this).val();
+                            console.log(value);
+                            datatable.columns(5).search(value).draw();
+                          });
+                          // find by name
+                          $(document).on('keyup', '#nameFilter', function () {
+                            var value = $(this).val();
+                            console.log(value);
+                            datatable.columns(1).search(value).draw();
+                          });
+                        });
+
+
+                        // MDB Lightbox Init
+                        $(function () {
+                          $("#mdb-lightbox-ui").load("/mdb-addons/mdb-lightbox-ui.html");
+                        });
+
+                        switch (window.location.search) {
+
+                          case "?alert=update-success":
+                            toastr.success("ยืนยันการจองเรียบร้อยแล้วค่ะ");
+                            break;
+                          case "?alert=edit-success":
+                            toastr.warning("แก้รายการออเดอร์เรียบร้อยค่ะ");
+                            break;
+                          case "?alert=delete-success":
+                            toastr.warning("ลบรายการจองสำเร็จ");
+                            break;
+                          case "?alert=confirm-success":
+                            toastr.success("ยืนยันโต๊ะเสร็จสิ้น");
+                            break;
+                          case "?alert=delete-list-success":
+                            toastr.warning("ลบรายการออเดอร์เเสร็จสิ้น");
+                            break;
+                          case "?alert=password-fail":
+                            toastr.warning("รหัสผ่านไม่ถูกต้อง");
+                            break;
+                        }
+
+                        function _edit(id, userid) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องเปลี่ยนสถานะจอง ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยันการจอง",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/admin/rev/edit/" + id + "/" + userid;
+                              }
+                            });
+                        }
+
+                        function _approve(id, userid) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการยืนยันการจอง ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยันการจอง",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/admin/rev/" + id + "/" + userid;
+                              }
+                            });
+                        }
+
+                        function _approveCoupon(id, userid, coupon, amount) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการยืนยันการจอง ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยันการจอง",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/admin/rev/used/" + id + "/" + userid + "/" + coupon + "/" +
+                                  amount;
+                              }
+                            });
+                        }
+
+                        function _approvetable(id, userid) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการยืนยันการจอง ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยันการจอง",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/admin/rev/booked/" + id + "/" + userid;
+                              }
+                            });
+                        }
+
+                        function _delete(id, userid) {
+                          const swalWithBootstrapButtons = Swal.mixin({
+                            customClass: {
+                              confirmButton: "btn btn-success",
+                              cancelButton: "btn btn-danger",
+                            },
+                            buttonsStyling: false,
+                          });
+
+                          swalWithBootstrapButtons
+                            .fire({
+                              title: "คุณต้องการลบรายการนี้ ?",
+                              //text: "You won't be able to revert this!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              confirmButtonText: "ยืนยัน",
+                              cancelButtonText: "ยกเลิก",
+                              reverseButtons: true,
+                            })
+                            .then((result) => {
+                              if (result.isConfirmed) {
+                                window.location.href = "/admin/rev/delete/" + id + "/" + userid;
+                              }
+                            });
+                        }
+                        new Vue({
+                          el: "#app",
+                          data() {
+                            return {
+                              orderlist: [],
+                              facebook_name: '',
+                              check: false,
+                              lasttotalprice: '',
+                              membername: '',
+                              productsize: '',
+                              productname: '',
+                              productdetail: '',
+                              category: '',
+                              productcode: '',
+                              productprice: 0,
+                              totalprice: 0,
+                              status: '',
+                              edit_status: '',
+                              displayName: 'fff',
+                              userId: '',
+                              pictureUrl: '',
+                              temail: '',
+                              qrcode: '',
+                              id: 0,
+                              all_order: [{
+                                order_id: 0
+                              }],
+                              row: '',
+                              ordercode: '',
+                              edit_totalprice: '',
+                              edit_id: '',
+                              edit_member_name: '',
+                              edit_product_name: '',
+                              edit_product_code: '',
+                              edit_facebook_name: '',
+                              edit_product_price: '',
+                              old_price: '',
+                              edit_product_size: '',
+                              edit_status: '',
+                              edit_product_category: '',
+                              edit_product_detail: '',
+                              orderid: '',
+                              del_id: '',
+                              del_product_price: '',
+                              del_orderid: '',
+                              del_code: ''
+                            }
+
+                          },
+                          created() {
+                            // this.loadUsers();
+                          },
+                          methods: {
+                            async getOrder(orderid, totalprice, status, ordercode) {
+                              this.orderid = orderid;
+                              this.ordercode = ordercode;
+                              this.edit_status = status;
+                              this.lasttotalprice = totalprice;
+                              // this.edit_status = status;
+                              await axios
+                                .get("/app/order/" + orderid)
+                                .then(response => {
+                                  this.orderlist = response.data
+                                })
+                                .catch(error => {
+                                  console.log(error)
+                                  this.errored = true
+                                })
+                                .finally($('#orderList').modal('show'))
+                              console.log(this.orderlist)
+                            },
+
+                            async delOrder(_id, product_price, orderid, ordercode) {
+                              this.del_code = ordercode
+                              this.del_id = _id
+                              this.del_product_price = product_price
+                              this.del_orderid = orderid
+                              $('#deleteModal').modal('show')
+
+                            },
+                            async editOrder(member_name, product_name, product_code, facebook_name, product_price,
+                              status, product_category, product_size, totalprice, id) {
+                              this.edit_id = id;
+                              this.edit_member_name = member_name;
+                              this.edit_product_name = product_name;
+                              this.edit_product_code = product_code;
+                              this.edit_facebook_name = facebook_name;
+                              this.edit_product_price = product_price;
+                              this.edit_product_size = product_size;
+                              this.edit_status = status;
+                              this.edit_product_category = product_category;
+                              this.edit_totalprice = totalprice
+                              this.old_price = product_price;
+                              console.log("edit_member_name :" + this.edit_member_name);
+                              console.log("edit_product_name :" + this.edit_product_name);
+                              console.log("edit_product_code :" + this.edit_product_code);
+                              console.log("edit_product_size :" + this.edit_product_size);
+                              console.log("edit_facebook_name :" + this.edit_facebook_name);
+                              console.log("edit_product_price :" + this.edit_product_price);
+                              console.log("edit_status :" + this.edit_status);
+                              console.log("edit_product_category :" + this.edit_product_category);
+                              $('#editModal').modal('show');
+                            },
+                            async _upload() {
+                              var od_id = 0;
+                              Papa.parse(document.getElementById('upload-csv').files[0], {
+                                download: true,
+                                header: false,
+                                complete: function (results) {
+                                  axios.post('/app/importorder', {
+                                      data: results
+                                    })
+                                    .then((response) => {
+                                      console.log(response);
+                                      let timerInterval
+
+                                      if (response.status == 200) {
+                                        window.location.href = "/app";
+                                      }
+                                    }, (error) => {
+                                      console.log(error);
+                                    });
+                                  Swal.fire({
+                                    title: 'ระบบกำลังอัปโหลด',
+                                    html: 'กรุณารอสักครู่',
+                                    timer: 6000,
+                                    timerProgressBar: true,
+                                    didOpen: () => {
+                                      Swal.showLoading()
+                                      timerInterval = setInterval(() => {
+                                        const content = Swal.getContent()
+                                        if (content) {
+                                          const b = content.querySelector('b')
+                                          if (b) {
+                                            b.textContent = Swal.getTimerLeft()
+                                          }
+                                        }
+                                      }, 100)
+                                    },
+                                    willClose: () => {
+                                      clearInterval(timerInterval)
+                                    }
+                                  }).then((result) => {
+                                    /* Read more about handling dismissals below */
+                                    if (response.status == 200) {
+                                      window.location.href = "/app";
+                                    }
+                                  })
+                                  console.log(results.data[0])
+                                }
+                              });
+                            }
+                          }
+                        })
+                        //Date picker
+                        $(function () {
+                          $('input[name="daterange"]').daterangepicker({
+                            timePicker: false,
+                            // startDate: moment().startOf('hour'),
+                            // endDate: moment().startOf('hour').add(32, 'hour'),
+                            locale: {
+                              format: 'D/MM/YYYY'
+                            },
+                            opens: 'left'
+                          }, function (start, end, label) {
+
+                            window.location.href = `/app?date_start=${start}&date_end=${end}`
+                            //console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                          });
+                        });
+                      </script>
+</body>
+
+</html>
